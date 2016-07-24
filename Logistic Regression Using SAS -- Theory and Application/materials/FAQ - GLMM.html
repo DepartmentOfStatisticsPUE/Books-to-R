@@ -1,0 +1,1477 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>DRAFT r-sig-mixed-models FAQ - GLMM</title>
+    
+    
+    
+    <script type='text/javascript'>
+var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+var gads = document.createElement('script');
+gads.async = true;
+gads.type = 'text/javascript';
+var useSSL = 'https:' == document.location.protocol;
+gads.src = (useSSL ? 'https:' : 'http:') + 
+'//www.googletagservices.com/tag/js/gpt.js';
+var node = document.getElementsByTagName('script')[0];
+node.parentNode.insertBefore(gads, node);
+})();
+</script>
+
+<script type='text/javascript'>
+googletag.cmd.push(function() {
+    // DEFINE DFP SLOTS
+googletag.defineSlot('/1030917/wikidot_free_sites_top_728x90', [728, 90], 'div-gpt-ad-1410946564449-1').addService(googletag.pubads());
+googletag.defineSlot('/1030917/wikidot_free_sites_bottom_300x250', [300, 250], 'div-gpt-ad-1410946564449-0').addService(googletag.pubads());
+googletag.defineOutOfPageSlot('/1030917/out_of_page', 'div-gpt-ad-1411637977813-0-oop').addService(googletag.pubads());
+
+// googletag.pubads().enableSingleRequest();
+googletag.pubads().collapseEmptyDivs(true, true);
+googletag.pubads().setTargeting("w_name", "glmm");
+googletag.pubads().setTargeting("w_domain", "com.wikidot.glmm");
+googletag.pubads().setTargeting("w_verified", "true");
+if(["education"]){googletag.pubads().setTargeting("w_cats", ["education"]);}
+if(false){googletag.pubads().setTargeting("w_mn", "true");}
+googletag.enableServices();
+});
+</script>
+<script type="text/javascript" src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--javascript/init.combined.js"></script>
+    <script  type="text/javascript">
+        var URL_HOST = 'www.wikidot.com';
+        var URL_DOMAIN = 'wikidot.com';
+        var USE_SSL =  true ;
+        var URL_STATIC = 'http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba';
+        // global request information
+        
+        var WIKIREQUEST = {};
+        WIKIREQUEST.info = {};
+        
+        WIKIREQUEST.info.domain = "glmm.wikidot.com";
+        WIKIREQUEST.info.siteId = 61218;
+        WIKIREQUEST.info.siteUnixName = "glmm";
+        WIKIREQUEST.info.categoryId = 336488;
+        WIKIREQUEST.info.themeId = 2437;
+        WIKIREQUEST.info.requestPageName = "faq";
+        OZONE.request.timestamp = 1466694983;
+        OZONE.request.date = new Date();
+        WIKIREQUEST.info.lang = 'en';
+                WIKIREQUEST.info.pageUnixName = "faq";
+        WIKIREQUEST.info.pageId = 4693381;
+                        WIKIREQUEST.info.lang = "en";
+        OZONE.lang = "en";
+        var isUAMobile = !!/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    </script>
+    
+    
+
+
+    
+        <script  type="text/javascript">
+    
+        require.config({
+            baseUrl: URL_STATIC + '/common--javascript',
+            paths: {
+                'jquery.ui': 'jquery-ui.min',
+                'jquery.form': 'jquery.form'
+            }
+        });
+    
+    </script>
+    
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+            
+    
+    
+    
+    
+    <meta http-equiv="content-language" content="en"/>
+    <script type="text/javascript" src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--javascript/WIKIDOT.combined.js"></script>
+        
+    
+    <style type="text/css">
+body {
+  background-position: center 24px;
+}
+</style>
+<style type="text/css" id="internal-style">
+        
+        /* modules */
+@import url(http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--modules/css/wiki/pagestagcloud/PagesTagCloudModule.css);
+
+
+        
+                
+        /* theme */
+                    @import url(http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--theme/base/css/style.css);
+                    @import url(http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--theme/webbish2/css/style.css);
+            </style>
+    
+        
+        
+        
+    <link rel="shortcut icon" href="/local--favicon/favicon.gif"/>
+    <link rel="icon" type="image/gif" href="/local--favicon/favicon.gif"/>
+    
+            <link rel="apple-touch-icon" href="/common--images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/common--images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/common--images/apple-touch-icon-114x114.png" />
+        
+        
+            <link rel="alternate" type="application/wiki" title="Edit this page" href="javascript:WIKIDOT.page.listeners.editClick()"/>
+    
+        <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-18234656-1']);
+        _gaq.push(['_setDomainName', 'none']);
+        _gaq.push(['_setAllowLinker', true]);
+        _gaq.push(['_trackPageview']);
+
+        _gaq.push(['old._setAccount', 'UA-68540-5']);
+        _gaq.push(['old._setDomainName', 'none']);
+        _gaq.push(['old._setAllowLinker', true]);
+        _gaq.push(['old._trackPageview']);
+
+                _gaq.push(['userTracker._setAccount', 'UA-3131047-5']);
+        _gaq.push(['userTracker._trackPageview']);
+            </script>
+    
+    <script type="text/javascript">
+        window.google_analytics_uacct = 'UA-18234656-1';
+        window.google_analytics_domain_name = 'none';
+    </script>
+    
+    <script type="text/javascript" src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--modules/js/misc/NewPageHelperModule.js"></script>
+</head>
+<body id="html-body">
+<div id="skrollr-body">
+<a name="page-top"></a>
+<div id="navi-bar">
+  <a class="logo" href="http://www.wikidot.com">
+    <span>Wikidot.com</span>
+  </a>
+  
+  <div class="new-site">
+    <form method="get" action="http://www.wikidot.com/new-site">
+      <input class="text empty" type="text" name="address" value="site-name"/>.wikidot.com
+    </form>
+  </div>
+  
+    <div class="share">
+    <span>Share on</span>
+    <a class="twitter" target="_blank" rel="nofollow" href="http://twitter.com/home?status=TITLE+URI"
+      title="Share on Twitter"
+    ><img src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--images/social/twitter.png" alt="twitter"/></a>  
+    <a class="facebook" target="_blank" rel="nofollow" href="http://www.facebook.com/share.php?u=URI&amp;t=TITLE"
+      title="Share on Facebook"><img src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--images/social/facebook.gif" alt="Facebook"
+      /></a>  
+    <a class="delicious" target="_blank" rel="nofollow" href="http://delicious.com/save"
+      title="Share on Delicious"
+      ><img src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--images/social/delicious.png" alt="Delicious"/></a>
+    <a class="digg" target="_blank" rel="nofollow" href="http://digg.com/submit?url=URI&amp;title=TITLE"
+      title="Post to Digg"
+      ><img src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--images/social/digg.png" alt="Digg"/></a>
+    <a class="reddit" href="http://www.reddit.com/submit?url=URI" rel="nofollow" target="_blank"
+      title="Post to Reddit"
+      ><img src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--images/social/reddit.png" alt="Reddit" border="0" /></a>
+    <a class="stumbleupon" href="http://www.stumbleupon.com/submit?url=URI" rel="nofollow" target="_blank"
+      title="Post to StumbleUpon"
+      ><img src="http://d3g0gp89917ko0.cloudfront.net/v--edac79f846ba/common--images/social/stumble.png" alt="Reddit" border="0" /></a>
+  </div>
+    
+      <a class="join" href="javascript:;" onclick="WIKIDOT.page.listeners.join(event, 'unified')">Join this site</a>
+    
+      <div class="action-buttons">
+      <a href="javascript:;" onclick="WIKIDOT.page.listeners.editClick(event)"
+      title="Click here to edit contents of this page.">Edit</a>
+      <a href="javascript:;" onclick="WIKIDOT.page.listeners.historyClick(event)"
+      title="Check out how this page has evolved in the past.">History</a>
+      <a href="javascript:;" onclick="WIKIDOT.page.listeners.editTags(event)"
+      title="Edit tags for this page.">Tags</a>
+      <a href="javascript:;" onclick="WIKIDOT.page.listeners.viewSourceClick(event)"
+      title="View wiki source for this page without editing.">Source</a>
+    </div>
+    
+  <a class="random-site" href="/random-site.php"
+  title="Go to a random Wikidot site.">Explore &raquo;</a>
+  </div>
+<div id="navi-bar-shadow">&nbsp;</div>
+
+
+<script type="text/javascript">
+  //<![CDATA[
+  $j(function(){
+    var uri = window.location.href;
+    var title = document.title
+    
+    $j('#navi-bar .share a').each(function(){
+      $t = $j(this);
+      var u = $t.attr('href');
+      u = u.replace(/TITLE/, encodeURIComponent(title)).replace(/URI/, encodeURIComponent(uri));
+      $t.attr('href', u);
+    });
+    
+    $j('#navi-bar .share .facebook').click(function(e){
+      window.open('http://www.facebook.com/sharer.php?u='+encodeURIComponent(uri)+'&t='+encodeURIComponent(title),'sharer','toolbar=0,status=0,width=626,height=436');
+      e.preventDefault();
+    });
+    $j('#navi-bar .share .delicious').click(function(e){
+      window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title), 'delicious','toolbar=no,width=550,height=550');
+      e.preventDefault();
+    });
+  });
+  
+	$j('#navi-bar .new-site form').submit(function(e){
+	  e.preventDefault();
+	  var $i = $j('#navi-bar .new-site form input.text');
+	  if($i.hasClass('empty')){
+	    	var w = new OZONE.dialogs.ErrorDialog();
+  			w.content = "You need to enter a valid web address for your new wiki.";
+  			w.show();
+  			return;
+    }
+    var siteName = $i.attr('value');
+    siteName = siteName.replace(/^\s+/, '').replace(/\s+$/,'');
+		var p = {};
+		p.action = 'wiki/special/NewWikiWidgetAction';
+		p.event = 'newWiki';
+		p.siteName = siteName;
+		OZONE.ajax.requestModule(null, p, function(r){
+		  if(r.status == 'site_exists'){
+		    window.location.href = 'http://' + siteName + '.' + URL_DOMAIN;
+		    return;
+		  }
+		  if(!WIKIDOT.utils.handleError(r)) {return;}
+  		// seems fine.
+  		window.location.href='http://'+URL_HOST+'/new-site/address/'+r.unixName;
+		});
+	});
+	$j('#navi-bar .new-site form input.text').focus(function(){
+	  var $t = $j(this);
+	  if($t.hasClass('empty')){
+	    $t.removeClass('empty');
+	    $t.attr('value', '');
+	  }
+	});
+	//]]>
+</script>
+
+
+<div id="container-wrap-wrap">
+    <div id="container-wrap">
+        <div id="container">
+            <div id="header">
+              <h1><a href="/"><span>GLMM</span></a></h1>
+                
+                
+                <!-- google_ad_section_start(weight=ignore) -->
+                
+                <div id="search-top-box" class="form-search">
+    <form id="search-top-box-form" action="dummy" class="input-append">
+        <input id="search-top-box-input" class="text empty search-query" type="text" size="15" name="query" value="Search this site" onfocus="if(YAHOO.util.Dom.hasClass(this, 'empty')){YAHOO.util.Dom.removeClass(this,'empty'); this.value='';}"/><input class="button btn" type="submit" name="search" value="Search"/>
+    </form>
+</div>
+                
+                
+                    <div id="top-bar">
+                        
+
+<ul>
+<li><a href="/contact">contact</a></li>
+</ul>
+
+                    </div>
+                
+                <div id="login-status"><a href="javascript:;" onclick="WIKIDOT.page.listeners.createAccount(event)" class="login-status-create-account btn">Create account</a> <span>or</span> <a href="javascript:;" onclick="WIKIDOT.page.listeners.loginClick(event)" class="login-status-sign-in btn btn-primary">Sign in</a> </div>
+                <div id="header-extra-div-1"><span></span></div><div id="header-extra-div-2"><span></span></div><div id="header-extra-div-3"><span></span></div>
+            </div>
+            
+            <div id="content-wrap">
+                
+                    <div id="side-bar">
+                        
+
+
+                        
+
+<ul>
+<li><a href="/start">Welcome page</a></li>
+</ul>
+<ul>
+<li><a href="/what-is-a-wiki-site">What is a Wiki Site?</a></li>
+<li><a href="/how-to-edit-pages">How to edit pages?</a></li>
+</ul>
+<ul>
+<li><a href="/system:join">How to join this site?</a></li>
+<li><a href="/system:members">Site members</a></li>
+<li><a href="/system:recent-changes">Recent changes</a></li>
+<li><a href="/system:list-all-pages">List all pages</a></li>
+<li><a href="/system:page-tags-list">Page Tags</a></li>
+<li><a href="/admin:manage">Site Manager</a></li>
+</ul>
+<h2 ><span>Page tags</span></h2>
+	<div class="pages-tag-cloud-box">
+									<a class="tag" href="/system:page-tags/tag/intro"
+					style="font-size: 80%; color: rgb(100, 100, 128);"
+					>intro</a>
+						</div>
+	
+
+<h2 ><span>Add a new page</span></h2>
+
+<div class="new-page-box" style="text-align: center; margin: 1em 0;">
+	<form action="dummy.html" method="get" onsubmit="WIKIDOT.modules.NewPageHelperModule.listeners.create(event);">
+		<input class="text" name="pageName" type="text" size="15" maxlength="128" style="margin: 1px"/>
+				<input type="submit" class="button" value="new page" style="margin: 1px;"/>
+																
+	</form>
+</div>
+
+<p style="text-align: center;"><span style="font-size:80%;"><a href="/nav:side">edit this panel</a></span></p>
+
+                        
+
+
+                    </div>
+                
+                
+                <!-- google_ad_section_end -->
+                
+                <div id="main-content">
+                    <div id="action-area-top"></div>
+                    
+                    
+                        <div id="page-title">
+                            DRAFT r-sig-mixed-models FAQ
+                        </div>
+                    
+
+                    
+
+                                    <!-- wikidot_top_728x90 -->
+<div id="div-gpt-ad-1410946564449-1" style="display: none" class="wd-adunit wd-adunit-dfp wd-adunit-above_content">
+
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1410946564449-1'); });
+</script>
+</div>
+
+            
+
+
+                    <div id="page-content">
+                        
+
+<p>This is a tentative draft of a FAQ list for the r-sig-mixed-models mailing list (the mailing list is at <span class="wiki-email">gro.tcejorp-r|sledom-dexim-gis-r#gro.tcejorp-r|sledom-dexim-gis-r</span>, with <a href="http://news.gmane.org/gmane.comp.lang.r.lme4.devel/">Gmane archives</a> available as well).</p>
+<p>The most commonly used functions for mixed modeling in R are</p>
+<ul>
+<li><em>linear mixed models</em>: aov(), nlme::lme, lme4::lmer;</li>
+<li><em>generalized linear mixed models</em> (GLMMs): MASS::glmmPQL, lme4::glmer, MCMCglmm::MCMCglmm;</li>
+<li><em>nonlinear mixed models</em>: nlme::nlme, lme4::nlmer.</li>
+</ul>
+<p><strong>DISCLAIMERS:</strong></p>
+<ul>
+<li>(G)LMMs are hard - harder than you may think based on what you may have learned in your second statistics class, which probably focused on picking the appropriate sums of squares terms and degrees of freedom for the numerator and denominator of an F test. &#8216;Modern&#8217; mixed model approaches, which are much more powerful (they can handle complex designs, lack of balance, crossed random factors, some kinds of non-normally distributed responses, etc.), also require a new set of conceptual tools. In order to use these tools you should have at least a general acquaintance with classical mixed-model experimental designs but you should also, probably, read something about modern mixed model approaches (Littell et al. [<a href="javascript:;" class="bibcite" id="bibcite-20-68898a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-20')">20</a>] and Pinheiro and Bates [<a href="javascript:;" class="bibcite" id="bibcite-23-36179a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-23')">23</a>] are two places to start, although Pinheiro and Bates is probably more useful if you want to use R. Others? Faraway? Zuur's books) If you are going to use generalized linear mixed models, you should understand generalized linear models.</li>
+<li>All of the issues that arise with regular linear or generalized-linear modeling (e.g.: inadequacy of p-values alone for thorough statistical analysis; need to understand how models are parameterized; need to understand the principle of marginality and how interactions can be treated; dangers of overfitting, which are not mitigated by stepwise procedures; the non-existence of free lunches) also apply, and can apply more severely, to mixed models.</li>
+<li>When SAS (or Stata, or Genstat/AS-REML or &#8230;) and R differ in their answers, R may not be wrong. Both SAS and R may be &#8216;right&#8217; but proceeding in a different way/answering different questions/using a different philosophical approach (or both may be wrong &#8230;)</li>
+<li>The advice in this FAQ comes with <strong>absolutely no warranty of any sort</strong>.</li>
+</ul>
+<p><a name="summary"></a></p>
+<h2 id="toc0"><span>Inference on (G)LMMs</span></h2>
+<h3 id="toc1"><span>What are the p-values listed by <tt>summary(glmerfit)</tt> etc.? Are they reliable?</span></h3>
+<p>By default, in keeping with the tradition in analysis of generalized linear models, <tt>lme4</tt> and similar packages display the Wald Z-statistics for each parameter in the model summary. These have one big advantage: they're convenient to compute. However, they are asymptotic approximations, assuming both that (1) the sampling distributions of the parameters are multivariate normal (or equivalently that the log-likelihood surface is quadratic) and that (2) the sampling distribution of the log-likelihood is (proportional to) <span class="math-inline">$\chi^2$</span>. The second approximation is discussed further under &quot;Degrees of freedom&quot;. The first assumption usually requires an even greater leap of faith, and is known to cause problems in some contexts (for binomial models failures of this assumption are called the <em>Hauck-Donner effect</em>), especially with extreme-valued parameters.</p>
+<h3 id="toc2"><span>What is the best way to test hypotheses on effects in GLMMs?</span></h3>
+<p>This question is not completely answerable, but there is generally a tradeoff between computational difficulty and accuracy.</p>
+<h4 id="toc3"><span>Tests of single parameters</span></h4>
+<p>From worst to best:</p>
+<ul>
+<li>Wald Z-tests</li>
+<li><strong>For balanced, nested LMMs</strong> where df can be computed: Wald t-tests</li>
+<li>Likelihood ratio test, either by setting up the model so that the parameter can be isolated/dropped (via <tt>anova</tt> or <tt>drop1</tt>), or via computing likelihood profiles</li>
+<li>MCMC or parametric bootstrap confidence intervals</li>
+</ul>
+<h4 id="toc4"><span>Tests of effects (i.e. testing that several parameters are simultaneously zero)</span></h4>
+<p>From worst to best:</p>
+<ul>
+<li>Wald chi-square tests (e.g. <tt>car::Anova</tt>)</li>
+<li>Likelihood ratio test (via <tt>anova</tt> or <tt>drop1</tt>)</li>
+<li><strong>For balanced, nested LMMs</strong> where df can be computed: conditional F-tests</li>
+<li><strong>For LMMs</strong>: conditional F-tests with df correction (e.g. Kenward-Roger in <tt>pbkrtest</tt> package). (Stroup [<a href="javascript:;" class="bibcite" id="bibcite-29-6061a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-29')">29</a>] states on the basis of (unpresented) simulation results that K-r actually works reasonably well for GLMMs. However, at present the code in <tt>KRmodcomp</tt> only handles LMMs.)</li>
+<li>MCMC or parametric, or nonparametric, bootstrap comparisons (nonparametric bootstrapping must be implemented carefully to account for grouping factors)</li>
+</ul>
+<h3 id="toc5"><span>Is the likelihood ratio test reliable for mixed models?</span></h3>
+<ul>
+<li>It depends.</li>
+<li>Not for fixed effects in finite-size cases (see [<a href="javascript:;" class="bibcite" id="bibcite-23-70758a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-23')">23</a>]): may depend on 'denominator degrees of freedom' (number of groups) and/or total number of samples - total number of parameters</li>
+<li>Conditional F-tests are preferred for LMMs, <strong>if</strong> denominator degrees of freedom are known</li>
+</ul>
+<h3 id="toc6"><span>Why doesn't <tt>lme4</tt> display denominator degrees of freedom/p values? What other options do I have?</span></h3>
+<p><a name="df"></a></p>
+<h4 id="toc7"><span>Degrees of freedom</span></h4>
+<p>(There is an <a href="http://cran.r-project.org/doc/FAQ/R-FAQ.html#Why-are-p_002dvalues-not-displayed-when-using-lmer_0028_0029_003f">R FAQ entry</a> on this topic, which links to a <a href="https://stat.ethz.ch/pipermail/r-help/2006-May/094765.html">mailing list post</a> by Doug Bates (there is also a voluminous <a href="http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests">mailing list thread</a> reproduced on the R wiki). The bottom line is</p>
+<ul>
+<li>In general it is not clear that the null distribution of the computed ratio of sums of squares is really an F distribution, for <em>any</em> choice of denominator degrees of freedom. While this is true for special cases that correspond to classical experimental designs (nested, split-plot, randomized block, etc.), it is apparently not true for more complex designs (unbalanced, GLMMs, temporal or spatial correlation, etc.).</li>
+<li>For each simple degrees-of-freedom recipe that has been suggested (trace of the hat matrix, etc.) there seems to be at least one fairly simple counterexample where the recipe fails badly.</li>
+<li>Other df approximation schemes that have been suggested (Satterthwaite, Kenward-Roger, etc.) would apparently be fairly hard to implement in lme4/nlme, both because of a difference in notational framework and because naive approaches would be computationally difficult in the case of large data sets. (The Kenward-Roger approach has now been implemented in the pbkrtest package (as KRmodcomp): although it was derived for LMMs, Stroup [<a href="javascript:;" class="bibcite" id="bibcite-29-87092a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-29')">29</a>] states on the basis of (unpresented) simulation results that it actually works reasonably well for GLMMs. However, at present the code in KRmodcomp only handles LMMs.)</li>
+<li>Note that there are several different issues at play in finite-size (small-sample) adjustments, which apply slightly differently to LMMs and GLMMs.
+<ul>
+<li>When the responses are normally distributed and the design is balanced, nested etc. (i.e. the classical LMM situation), the scaled deviances and differences in deviances are exactly F-distributed and looking at the experimental design (i.e., which treatments vary/are replicated at which levels) tells us what the relevant degrees of freedom are.</li>
+<li>When the data are not classical (crossed, unbalanced, R-side effects), we might still guess that the deviances etc. are approximately F-distributed but that we don't know the real degrees of freedom &#8212; this is what the Satterthwaite, Kenward-Roger, Fai-Cornelius, etc. approximations are supposed to do.</li>
+<li>When the responses are not normally distributed (as in GLMs and GLMMs), and when the scale parameter is not estimated (as in standard Poisson- and binomial-response models), then the deviance differences are only asymptotically F- or chi-square-distributed (i.e. not for our real, finite-size samples). In standard GLM practice, we usually ignore this problem; there is some literature on finite-size corrections for GLMs under the rubrics of &quot;Bartlett corrections&quot; and &quot;higher order asymptotics&quot; (see McCullagh and Nelder, work by Cordeiro, and the cond package on CRAN [which works with GLMs, not GLMMs]), but it's rarely used. (The bias correction/Firth approach implemented in the brglm package attempts to address the problem of finite-size bias, not finite-size non-chi-squaredness of the deviance differences.)</li>
+<li>When the scale parameter in a GLM is estimated rather than fixed (as in Gamma or quasi-likelihood models), it is sometimes recommended to use an F test to account for the uncertainty of the scale parameter (e.g. Venables and Ripley recommend anova(&#8230;,test=&quot;F&quot;) for quasi-likelihood models)</li>
+<li>Combining these issues, one has to look pretty hard for information on small-sample or finite-size corrections for GLMMs: Feng et al 2004 [<a href="javascript:;" class="bibcite" id="bibcite-14-93214a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-14')">14</a>] and Bell and Grunwald 2010 [<a href="javascript:;" class="bibcite" id="bibcite-6-43446a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-6')">6</a>] look like good starting points, but it's not at all trivial.</li>
+</ul>
+</li>
+<li>Because the primary authors of <tt>lme4</tt> are not convinced of the utility of the general approach of testing with reference to an approximate null distribution, and because of the overhead of anyone else digging into the code to enable the relevant functionality (as a patch or an add-on), this situation is unlikely to change in the future.</li>
+</ul>
+<h4 id="toc8"><span>Df alternatives:</span></h4>
+<ul>
+<li>use MASS::glmmPQL (uses old nlme rules approximately equivalent to SAS 'inner-outer' rules) for GLMMs, or (n)lme for LMMs</li>
+<li>Guess the denominator df from standard rules (for standard designs) and apply them to t or F tests</li>
+<li>Run the model in lme (if possible) and use the denominator df reported there (which follow a simple 'inner-outer' rule which should correspond to the canonical answer for simple/orthogonal designs), applied to t or F tests. For the explicit specification of the rules that <tt>lme</tt> uses, see page 91 of Pinheiro and Bates &#8212; this page is available on <a href="http://tinyurl.com/ntygq3">Google Books</a> &#8230;</li>
+<li>use SAS, Genstat (AS-REML), Stata?</li>
+<li>Assume infinite denominator df (i.e. Z/chi-squared test rather than t/F) if number of groups is large (&gt;45? Various rules of thumb for how large is &quot;approximately infinite&quot; have been posed, including [in Angrist and Pischke's ''Mostly Harmless Econometrics''], 42 (in homage to Douglas Adams)</li>
+</ul>
+<p><a name="random-sig"></a></p>
+<h3 id="toc9"><span>How can I test whether a random effect is significant?</span></h3>
+<ul>
+<li>perhaps you shouldn't (if the random effect is part of the experimental design, this procedure may be considered 'sacrificial pseudoreplication' (Hurlburt 1984); using stepwise approaches to eliminate non-significant terms in order to squeeze more significance out of the remaining terms is dangerous in any case)</li>
+<li><strong>do not</strong> compare lmer models with the corresponding lm fits, or glmer/glm; the log-likelihoods are not commensurate (i.e., they include different additive terms)</li>
+<li>consider using RLRsim for simple tests</li>
+<li>parametric bootstrap</li>
+<li>profile likelihood (using more recent versions of lme4?) to evaluate likelihood at <span class="math-inline">$\sigma^2=0$</span></li>
+<li>keep in mind that LRT-based null hypothesis tests are conservative when the null value (such as <span class="math-inline">$\sigma^2=0$</span>) is on the boundary of the feasible space; in the simplest case (single random effect variance), the p-value is approximately twice as large as it should be [<a href="javascript:;" class="bibcite" id="bibcite-23-24322a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-23')">23</a>]</li>
+</ul>
+<p><a name="aic"></a></p>
+<h3 id="toc10"><span>Can I use AIC for mixed models? How do I count the number of degrees of freedom for a random effect?</span></h3>
+<ul>
+<li>Yes, with caution.</li>
+<li>It depends on the &quot;level of focus&quot; (sensu Spiegelhalter et al 2002 [<a href="javascript:;" class="bibcite" id="bibcite-27-75212a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-27')">27</a>]) whether (e.g.) a single random-effect variance should be counted as 1 degree of freedom (i.e., the variance parameter or as a value between 1 and N-1 (where N is the number of groups): see Vaida and Blanchard 2005 [<a href="javascript:;" class="bibcite" id="bibcite-30-82032a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-30')">30</a>] and Greven and Kneib 2010 [<a href="javascript:;" class="bibcite" id="bibcite-17-51535a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-17')">17</a>]. If you are interested in population-level prediction/inference, then the former (called <em>marginal AIC</em> [mAIC]); if individual-level prediction/inference (i.e., using the BLUPs/conditional modes), then the latter (called <em>conditional AIC</em> [cAIC]). Greven and Kneib present results for linear models, giving a version of cAIC that is both computationally efficient and takes uncertainty in the estimation of the variances into account. (Bob O'Hara has a very nice, illustrative <a href="http://deepthoughtsandsilliness.blogspot.ca/2007/12/focus-on-dic.html">blog post</a> on this topic in the context of DIC &#8230;)</li>
+<li>in cases when testing a variance parameter, AIC may be subject to the same kinds of boundary effects as likelihood ratio test p-values (i.e., AICs may be conservative/overfit slightly when the nested parameter value is on the boundary of the feasible space). Greven and Kneib [<a href="javascript:;" class="bibcite" id="bibcite-17-52291a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-17')">17</a>] explore the problems with mAIC in this context, but do not suggest a solution (they point out that Hughes and King 2003 [<a href="javascript:;" class="bibcite" id="bibcite-18-83564a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-18')">18</a>] have a 'one-sided' AIC, but not one that deals with the non-independence of data points. I haven't read Hughes and King, I should go do that).</li>
+<li>AIC also inherits the primary problem of likelihood ratio tests in the GLMM context &#8212; that is, that LRTs are asymptotic tests. A finite-size correction for AIC does exist (AICc) &#8212; but it was developed in the context of linear models. As far as I know its adequacy in the GLMM case has not been established. See e.g. Richards 2005 [<a href="javascript:;" class="bibcite" id="bibcite-25-52707a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-25')">25</a>] for caution about AICc in the GLM (not GLMM) case.</li>
+<li>lme4 and nlme count parameters for AIC(c) as follows
+<ul>
+<li>the number of fixed-effect parameters is straightforward (the length of the fixed-effect parameter vector beta, equal to fixef(coef(model))</li>
+<li>each random term in the model with <span class="math-inline">$q$</span> components counts for <span class="math-inline">$q(q+1)/2$</span> parameters &#8212; for example, a term of the form (slope|group) has 3 parameters (intercept variance, slope variance, correlation between intercept and slope).</li>
+<li>models that use a scale parameter (e.g. the variance parameter of linear mixed models, or the scale parameter of a Gamma GLMM &#8212; standard GLMMs such as binomial and Poisson do not) get an extra parameter counted. Whether to add nuisance parameters or not, such as the residual variance parameter (estimated based on the residual variance, rather than an explicit parameter in the optimization) is as far as I know an open question. In the classic AIC context it doesn't matter as long as one is consistent. In the AICc context, I don't think anyone really knows the answer &#8230; adding +1 for the residual variance parameter (as lme4 does) would make the model selection process slightly more conservative.</li>
+</ul>
+</li>
+</ul>
+<h4 id="toc11"><span>P-values: MCMC and parametric bootstrap</span></h4>
+<p>Abandoning the approximate F/t-statistic route, one ends up with the more general problem of estimating p values. There is a wider range of options here, although many of them are computationally intensive &#8230;</p>
+<h5 id="toc12"><span>Markov chain Monte Carlo sampling:</span></h5>
+<ul>
+<li>pseudo-Bayesian: post-hoc sampling, typically (1) assuming flat priors and (2) starting from the MLE, possibly using the approximate variance-covariance estimate to choose a candidate distribution
+<ul>
+<li>via <tt>mcmcsamp</tt> (if available for your problem: i.e. LMMs with simple random effects &#8212; not GLMMs or complex random effects)</li>
+<li>via <tt>pvals.fnc</tt> in the <tt>languageR</tt> package, a wrapper for mcmcsamp)</li>
+<li>in AD Model Builder, possibly via the <tt>glmmADMB</tt> package (use the <tt>mcmc=TRUE</tt> option) or the <tt>R2admb</tt> package (write your own model definition in AD Model Builder), or outside of R</li>
+<li>via the <tt>sim</tt> function from the <tt>arm</tt> package (simulates the posterior only for the beta (fixed-effect) coefficients; not yet working with development lme4; would like a better formal description of the algorithm &#8230;?)</li>
+</ul>
+</li>
+<li>fully Bayesian approaches
+<ul>
+<li>via the <tt>MCMCglmm</tt> package</li>
+<li><tt>glmmBUGS</tt> (a WinBUGS wrapper/R interface)</li>
+<li>JAGS/WinBUGS/OpenBUGS etc., via the <tt>rjags</tt>/<tt>r2jags</tt>/<tt>R2WinBUGS</tt>/<tt>BRugs</tt> packages</li>
+</ul>
+</li>
+</ul>
+<p><a name="mcmcsamp_status"></a></p>
+<h6 id="toc13"><span>Status of mcmcsamp</span></h6>
+<p><tt>mcmcsamp</tt> is a function for lme4 that is supposed to sample from the posterior distribution of the parameters, based on flat/improper priors for the parameters [ed: I believe, but am not sure, that these priors are flat <strong>on the scale of the theta (Cholesky-factor) parameters</strong>]. At present, in the CRAN version (lme4&#160;0.999999-0) and the R-forge &quot;stable&quot; version (lme4.0&#160;0.999999-1), this covers only linear mixed models with uncorrelated random effects.</p>
+<p>As has been discussed in a variety of places (e.g. <a href="http://article.gmane.org/gmane.comp.lang.r.lme4.devel/1788/">on r-sig-mixed-models</a>, and <a href="https://r-forge.r-project.org/tracker/?func=detail&amp;aid=68&amp;group_id=60&amp;atid=298">on the r-forge bug tracker</a>), it is challenging to come up with a sampler that accounts properly for the possibility that the posterior distributions for some of the variance components may be mixtures of point masses at zero and continuous distributions. Naive samplers are likely to get stuck at or near zero. Doug Bates has always been a bit unsure that <tt>mcmcsamp</tt> is really performing as intended, even in the limited cases it now handles.</p>
+<p>Given this uncertainty about how even the basic version works, the <tt>lme4</tt> developers have been reluctant to make the effort to extend it to GLMMs or more complex LMMs, or to implement it for the development version of lme4 &#8230; so unless something miraculous happens, it will not be implemented for the new version of <tt>lme4</tt>. As always, users are encouraged to write and share their own code that implements these capabilities &#8230;</p>
+<h5 id="toc14"><span>Parametric bootstrap</span></h5>
+<p>The idea here is that in order to do inference on the effect of (a) predictor(s), you (1) fit the reduced model (without the predictors) to the data; (2) many times, (2a) simulate data from the reduced model; (2b) fit both the reduced and the full model to the simulated (null) data; (2c) compute some statistic(s) [e.g. t-statistic of the focal parameter, or the log-likelihood or deviance difference between the models]; (3) compare the observed values of the statistic from fitting your full model to the data to the null distribution generated in step 2.</p>
+<ul>
+<li><tt>PBmodcomp</tt> in the <tt>pbkrtest</tt> package</li>
+<li>see the example in <tt>help(&quot;simulate-mer&quot;)</tt> in the <tt>lme4</tt> package to roll your own, using a combination of <tt>simulate()</tt> and <tt>refit()</tt>.</li>
+<li><tt>bootMer</tt> in <tt>lme4</tt> version &gt;1.0.0</li>
+<li>a presentation at UseR! 2009 (<a href="http://www.agrocampus-ouest.fr/math/useR-2009/abstracts/pdf/SanchezEspigares+Ocana.pdf">abstract</a>, <a href="http://www.agrocampus-ouest.fr/math/useR-2009/slides/SanchezEspigares+Ocana.pdf">slides</a>) went into detail about a proposed <tt>bootMer</tt> package and suggested it could work for GLMMs too &#8212; but it does not seem to be active.</li>
+</ul>
+<p><a name="rsquared"></a></p>
+<h3 id="toc15"><span>How do I compute a coefficient of determination (<span class="math-inline">$R^2$</span>), or an analogue, for (G)LMMs?</span></h3>
+<p>(<em>This topic applies to both LMMs and GLMMs, perhaps more so to LMMs, because the issues are even harder for GLMMs.</em>)</p>
+<p>Researchers often want to know if there is a simple (or at least implemented-in-R) way to get an analogue of <span class="math-inline">$R^2$</span> or another simple goodness-of-fit metric for LMMs or GLMMs. This is a challenging question in both the GLM and LMM worlds (and therefore doubly so for GLMMs), because it turns out that the wonderful simplicity of <span class="math-inline">$R^2$</span> breaks down in the extension to GLMs or LMMs. If you're trying to quantify &quot;fraction of variance explained&quot; in the GLM context, should you include or exclude sampling variation (e.g., Poisson variation around the expected mean)? [According to an <tt>sos::findFn</tt> search for &quot;Nagelkerke&quot;, one of the common solutions to this problem, the <tt>LogRegR2</tt> function in the <tt>descr</tt> package computes several different &quot;pseudo-<span class="math-inline">$R^2$</span>&quot; measures for logistic regression.] If you're trying to quantify it in the LMM context, should you include or exclude variation of different random-effects terms?</p>
+<p>The same questions apply more generally to decomposition of variance (i.e. trying to assess the contribution of various model components to the overall fit, not just trying to assess the overall goodness-of-fit of the model); there is unlikely to be a single recipe that does everything you want.</p>
+<p>This has been discussed at various times on the mailing lists. <a href="http://thread.gmane.org/gmane.comp.lang.r.lme4.devel/3281">This thread</a> and <a href="http://thread.gmane.org/gmane.comp.lang.r.lme4.devel/684">this thread</a> on the r-sig-mixed-models mailing list are good starting points, and <a href="http://thread.gmane.org/gmane.comp.lang.r.lme4.devel/2143">this post</a> is useful too.</p>
+<p>In one of those threads, Doug Bates said:</p>
+<blockquote>
+<p>Assuming that one wants to define an R^2 measure, I think an<br />
+argument could be made for treating the penalized residual sum of<br />
+squares from a linear mixed model in the same way that we consider the<br />
+residual sum of squares from a linear model. Or one could use just<br />
+the residual sum of squares without the penalty or the minimum<br />
+residual sum of squares obtainable from a given set of terms, which<br />
+corresponds to an infinite precision matrix. I don't know, really.<br />
+It depends on what you are trying to characterize.</p>
+</blockquote>
+<p>Also in one of those threads, Jarrett Byrnes contributed the following code:</p>
+<div class="code">
+<pre>
+<code>r2.corr.mer &lt;- function(m) {
+   lmfit &lt;-  lm(model.response(model.frame(m)) ~ fitted(m))
+   summary(lmfit)$r.squared
+}</code>
+</pre></div>
+<p><span class="math-inline">$\Omega^2_0$</span> [<a href="javascript:;" class="bibcite" id="bibcite-31-24196a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-31')">31</a>], which is almost the same, based on comparing the residual variance of the full model against the residual variance of a (fixed) intercept-only null model:</p>
+<div class="code">
+<pre>
+<code>1-var(residuals(m))/(var(model.response(model.frame(m)))</code>
+</pre></div>
+<p>The bottom line is that there are some simple recipes (and some more complex recipes that may or may not have been coded up by someone), but that '''you have to think carefully about what information you want to get out of the coefficient of determination''', because no recipe will have all of the properties of <span class="math-inline">$R^2$</span> in the simple linear model case.</p>
+<h2 id="toc16"><span>GLMMs</span></h2>
+<p><a name="estmethods"></a></p>
+<h3 id="toc17"><span>What methods are available to fit (estimate) GLMMs?</span></h3>
+<p>(adapted from Bolker et al TREE 2009)</p>
+<table class="wiki-content-table">
+<tr>
+<td>Penalized quasi-likelihood</td>
+<td>Flexible, widely implemented</td>
+<td>Likelihood inference may be inappropriate; biased for large variance or small means</td>
+<td>PROC GLIMMIX (SAS), GLMM (GenStat), glmmPQL (R:MASS), ASREML-R</td>
+</tr>
+<tr>
+<td>Laplace approximation</td>
+<td>More accurate than PQL</td>
+<td>Slower and less flexible than PQL</td>
+<td>glmer (R:lme4,lme4a), glmm.admb (R:glmmADMB), AD Model Builder, HLM</td>
+</tr>
+<tr>
+<td>Gauss-Hermite quadrature</td>
+<td>More accurate than Laplace</td>
+<td>Slower than Laplace; limited to 2‑3 random effects</td>
+<td>PROC NLMIXED (SAS), glmer (R:lme4, lme4a), glmmML (R:glmmML), xtlogit (Stata)</td>
+</tr>
+<tr>
+<td>Markov chain Monte Carlo</td>
+<td>Highly flexible, arbitrary number of random effects; accurate</td>
+<td>Very slow, technically challenging, Bayesian framework</td>
+<td>MCMCglmm (R:MCMCglmm), MCMCpack (R), WinBUGS/OpenBUGS (R interface: BRugs/R2WinBUGS), JAGS (R interface: rjags/R2jags), AD Model Builder (R interface: R2admb), glmm.admb<sup class="footnoteref"><a id="footnoteref-1" href="javascript:;" class="footnoteref" onclick="WIKIDOT.page.utils.scrollToReference('footnote-1')">1</a></sup> (R:glmmADMB)</td>
+</tr>
+</table>
+<h3 id="toc18"><span>Which R packages (functions) fit GLMMs?</span></h3>
+<ul>
+<li>MASS::glmmPQL (penalized quasi-likelihood)</li>
+<li>lme4::glmer (Laplace approximation and adaptive Gauss-Hermite quadrature [AGHQ])</li>
+<li>MCMCglmm (Markov chain Monte Carlo)</li>
+<li>glmmML (AGHQ)</li>
+<li>glmmAK (AGHQ?)</li>
+<li>glmmADMB (Laplace)</li>
+<li>glmm (from Jim Lindsey's <tt>repeated</tt> package: AGHQ)</li>
+<li>gamlss.mx</li>
+<li>ASREML-R</li>
+<li>sabreR</li>
+</ul>
+<p><a name="overdispersion"></a></p>
+<h3 id="toc19"><span>How can I deal with overdispersion in GLMMs?</span></h3>
+<p><a name="overdispersion_est"></a></p>
+<h4 id="toc20"><span>How can I test for overdispersion/compute an overdispersion factor?</span></h4>
+<ul>
+<li>with the usual caveats, plus a few extras &#8212; counting degrees of freedom, etc. &#8212; the usual procedure of calculating the sum of squared Pearson residuals and comparing it to the residual degrees of freedom should give at least a crude idea of overdispersion. The following attempt counts each variance or covariance parameter as one model degree of freedom and presents the sum of squared Pearson residuals, the ratio of (SSQ residuals/rdf), the residual df, and the <span class="math-inline">$p$</span>-value based on the (approximately!!) appropriate <span class="math-inline">$\chi^2$</span> distribution. <strong>Do PLEASE note the usual, and extra, caveats noted here: this is an APPROXIMATE estimate of an overdispersion parameter</strong>. Even in the GLM case, the expected deviance per point equaling 1 is only true as the distribution of individual deviates approaches normality, i.e. the usual <span class="math-inline">$\lambda&gt;5$</span> rules of thumb for Poisson values and <span class="math-inline">$\mbox{min}(Np, N(1-p)) &gt; 5$</span> for binomial values (e.g. see <a href="http://books.google.com/books?id=974c4vKurNkC&amp;pg=PA209">Venables and Ripley MASS p. 209</a>). (And that's without the extra complexities due to GLMM, i.e. the &quot;effective&quot; residual df should be large enough to make the sums of squares converge on a <span class="math-inline">$\chi^2$</span> distribution &#8230;)</li>
+</ul>
+<p>The following function works for (at least) <tt>lme4</tt> and <tt>glmmADMB</tt> &#8230;</p>
+<div class="code">
+<pre>
+<code>overdisp_fun &lt;- function(model) {
+  ## number of variance parameters in 
+  ##   an n-by-n variance-covariance matrix
+  vpars &lt;- function(m) {
+    nrow(m)*(nrow(m)+1)/2
+  }
+  model.df &lt;- sum(sapply(VarCorr(model),vpars))+length(fixef(model))
+  rdf &lt;- nrow(model.frame(model))-model.df
+  rp &lt;- residuals(model,type=&quot;pearson&quot;)
+  Pearson.chisq &lt;- sum(rp^2)
+  prat &lt;- Pearson.chisq/rdf
+  pval &lt;- pchisq(Pearson.chisq, df=rdf, lower.tail=FALSE)
+  c(chisq=Pearson.chisq,ratio=prat,rdf=rdf,p=pval)
+}</code>
+</pre></div>
+<p>Example:</p>
+<div class="code">
+<pre>
+<code>library(lme4)  ## 1.0-4
+set.seed(101)  
+d &lt;- data.frame(y=rpois(1000,lambda=3),x=runif(1000),
+                f=factor(sample(1:10,size=1000,replace=TRUE)))
+m1 &lt;- glmer(y~x+(1|f),data=d,family=poisson)
+overdisp_fun(m1)
+##        chisq        ratio          rdf            p 
+## 1026.7780815    1.0298677  997.0000000    0.2497659 
+library(glmmADMB)  ## 0.7.7
+m2 &lt;- glmmadmb(y~x+(1|f),data=d,family=&quot;poisson&quot;)
+overdisp_fun(m2)
+##        chisq        ratio          rdf            p 
+## 1026.7585031    1.0298480  997.0000000    0.2499024</code>
+</pre></div>
+<p>The <tt>gof</tt> function in the <tt>aods3</tt> package works for recent (development) versions of the <tt>lme4</tt> package &#8212; it provides essentially the same set of information.</p>
+<h4 id="toc21"><span>How can I fit a model that allows for overdispersion?</span></h4>
+<ul>
+<li>quasilikelihood estimation: <a href="http://finzi.psych.upenn.edu/R/library/MASS/html/glmmPQL.html">MASS::glmmPQL</a>. Quasi- was deemed unreliable in lme4, and is no longer available. (Part of the problem was questionable numerical results in some cases;; the other problem was that DB felt that he did not have a sufficiently good understanding of the theoretical framework that would explain what the algorithm was actually estimating in this case.) <a href="http://finzi.psych.upenn.edu/R/library/geepack/html/geeglm.html">geepack::geeglm</a> may be workable (haven't tried it)</li>
+<li>individual-level random effects (MCMCglmm <strong>or</strong> recent version of lme4, 0.999375-34 or later) [or WinBUGS or ADMB or &#8230;]. If you want to a citation for this approach, try Elston et al 2001 [<a href="javascript:;" class="bibcite" id="bibcite-13-43075a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-13')">13</a>], who cite Lawson et al [<a href="javascript:;" class="bibcite" id="bibcite-19-80869a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-19')">19</a>]; apparently there is also an example in section 10.5 of Maindonald and Braun 3d ed. [<a href="javascript:;" class="bibcite" id="bibcite-21-4257a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-21')">21</a>], and (according to an R-sig-mixed-models post) this also discussed by Rabe-Hesketh and Skrondal 2008 [<a href="javascript:;" class="bibcite" id="bibcite-24-51854a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-24')">24</a>]. Also see Browne et al 2005 [<a href="javascript:;" class="bibcite" id="bibcite-10-11048a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-10')">10</a>] for an example in the binomial context (i.e. logit-normal-binomial rather than lognormal-Poisson). Agresti's excellent (2002) book [<a href="javascript:;" class="bibcite" id="bibcite-1-78076a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-1')">1</a>] also discusses this (section 13.5), referring back to Breslow (1984, Appl Stat 33:38-44) and Hinde (1982, pp. 109-121 in GLIM82: Proc. Int. Conf. on GLMs, ed. R Gilchrist, Springer). [<strong>Notes</strong>: (a) I haven't checked all these references myself, (b) I can't find the reference any more, but I have seen it stated that individual-level random effect estimation is probably dodgy for PQL approaches as used in Elston et al 2001]</li>
+<li>alternative distributions
+<ul>
+<li>Poisson-lognormal model (see above, &quot;individual-level random effects&quot;)</li>
+<li>negative binomial
+<ul>
+<li><a href="http://r-forge.r-project.org/projects/glmmADMB/">glmmADMB</a> (R-forge) will fit two parameterizations of the negative binomial: family=&quot;nbinom&quot; gives the classic parameterization with var/mean=(1+mean/k) (&quot;NB2&quot; in Hardin and Hilbe's terminology) while family=&quot;nbinom1&quot; gives a parameterization with var/mean=phi*mean (&quot;NB1&quot; to Hardin and Hilbe). The latter might also be called a &quot;quasi-Poisson&quot; parameterization because it matches mean-variance relationship assumed by quasi-Poisson models.</li>
+<li>gamlss.mx:gamlssNP</li>
+<li>WinBUGS/JAGS (via R2WinBUGS/Rjags)</li>
+<li>AD Model Builder (possibly via R2ADMB)</li>
+<li>gnlmm in the <tt>repeated</tt> package (off-CRAN: [<a href="http://www.commanster.eu/rcode.html">http://www.commanster.eu/rcode.html</a>])</li>
+<li>ASREML ([<a href="http://www.asreml.com/software/genstat/htmlhelp/server/GLMM.htm">http://www.asreml.com/software/genstat/htmlhelp/server/GLMM.htm</a>])</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Negative binomial models in glmmADMB and lognormal-Poisson models in glmer (or MCMCglmm) are probably the best quick alternatives. If you need to explore alternatives (different variance-mean relationships, different distributions), then ADMB and WinBUGS are the most flexible alternatives.</p>
+<h3 id="toc22"><span>Gamma GLMMs?</span></h3>
+<p>While one (well, ok I) would naively think that GLMMs with Gamma distributions would be just as easy (or hard) as any other sort of GLMMs, it seems that they are in fact harder to implement (or at least not yet thoroughly/stably working in lme4). Basic simulated examples of Gamma GLMMs can fail in lme4 despite analogous problems with Poisson, binomial, etc. distributions. Solutions:</p>
+<ul>
+<li>the default inverse link seems particularly problematic; try other links if that is possible/makes sense</li>
+<li>consider whether a lognormal model (i.e. a regular LMM on logged data) would work/makes sense</li>
+<li>glmmPQL</li>
+<li>glmmADMB, especially the 'alpha' (&gt;0.6.4) version which handles multiple random effects</li>
+<li>other packages (WinBUGS) etc. ?</li>
+<li>gamlssNP?</li>
+</ul>
+<h3 id="toc23"><span>Zero-inflated GLMMs?</span></h3>
+<ul>
+<li>MCMCglmm handles zero-truncated, zero-inflated, and zero-altered models, although specifying the models is a little bit tricky: see Sections 5.3 to 5.5 of the &quot;CourseNotes&quot; vignette</li>
+<li>glmmADMB handles
+<ul>
+<li>zero-inflated models (with a single zero-inflation parameter &#8212; i.e., the level of zero-inflation is assumed constant across the whole data set)</li>
+<li>truncated Poisson and negative binomial distributions (which allows two-stage fitting of hurdle models)</li>
+</ul>
+</li>
+<li>gamlssNP in the gamlss.mx package should handle zero-inflation, and the gamlss.tr package should handle truncated (i.e. hurdle) models &#8212; but I haven't tried them</li>
+<li>roll-your-own: ADMB/R2admb, WinBUGS/R2WinBUGS &#8230;</li>
+</ul>
+<h4 id="toc24"><span>ZIGLMMs for continuous data</span></h4>
+<p>Continuous data are a special case where the mixture model may make less sense.</p>
+<ul>
+<li>The simplest solution is to fit a Bernoulli model to the zero/non-zero data, then a continuous model (lognormal? Gamma?) for the non-zero values. If you want to fit a truncated continuous distribution to the non-zero values, that gets harder &#8230;</li>
+<li>The cplm package handles 'Tweedie compound Poisson linear models', which in a particular range of parameters allows for skewed continuous responses with a spike at zero</li>
+</ul>
+<h4 id="toc25"><span>Tests for zero-inflation?</span></h4>
+<ul>
+<li>you can use a likelihood ratio test between the regular and zero-inflated version of the model, but be aware of boundary issues (search &quot;boundary&quot; elsewhere on this page &#8230;) &#8212; the null value (no zero inflation) is on the boundary of the feasible space</li>
+<li>you can use AIC or variations, with the same caveats</li>
+<li>you can use Vuong's test, which is often recommended for testing zero-inflation in GLMs, because under some circumstances the various model flavors under consideration (hurdle vs zero-inflated vs &quot;vanilla&quot;) are not nested. Vuong's test is implemented (and referenced) in the pscl package, and should be feasible to implement for GLMMs, but I don't know of an implementation. Someone should let me (BMB) know if they find one.</li>
+<li>two untested but reasonable approaches:
+<ul>
+<li>use a 'simulate' method if it exists to construct a simulated distribution of the proportion of zeros in your dataset, and compare it to the observed proportion</li>
+<li>compute the probability of a zero for each observation. On the basis of Bernoulli trials, compute the expected number of zeros and the confidence intervals &#8212; compare it with the observed number.</li>
+</ul>
+</li>
+</ul>
+<p><a name="reml-glmm"></a></p>
+<h3 id="toc26"><span>REML for GLMMs?</span></h3>
+<p>While restricted maximum likelihood (REML) procedures (<a href="http://en.wikipedia.org/wiki/Restricted_maximum_likelihood">Wikipedia definition</a>) are well established for linear mixed models, it is less clear how one should define and compute the equivalent criteria (integrating out the effects of fixed parameters) for GLMMs. Millar 2011 [<a href="javascript:;" class="bibcite" id="bibcite-22-35837a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-22')">22</a>] and Berger et al 1999 [<a href="javascript:;" class="bibcite" id="bibcite-7-8306a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-7')">7</a>] are possible starting points in the peer-reviewed literature, and there are mailing-list discussions of these issues <a href="https://stat.ethz.ch/pipermail/r-sig-mixed-models/2009q1/002104.html">here</a> and <a href="http://lists.admb-project.org/pipermail/users/2011-June/001224.html">here</a>.</p>
+<p>Note that in the current version of lme4, glmer <strong>silently ignores</strong> the REML specification (!)</p>
+<p><a name="modelspec"></a></p>
+<h2 id="toc27"><span>Model specification etc.</span></h2>
+<p>Modified from Robin Jeffries, UCLA:</p>
+<table class="wiki-content-table">
+<tr>
+<td><tt>(1|group)</tt></td>
+<td>random group intercept</td>
+</tr>
+<tr>
+<td><tt>(x|group)</tt> = <tt>(1+x|group)</tt></td>
+<td>random slope of x within group with correlated intercept</td>
+</tr>
+<tr>
+<td><tt>(0+x|group)</tt> = <tt>(-1+x|group)</tt></td>
+<td>random slope of x within group: no variation in intercept</td>
+</tr>
+<tr>
+<td><tt>(1|group) + (0+x|group)</tt></td>
+<td>uncorrelated random intercept and random slope within group</td>
+</tr>
+<tr>
+<td><tt>(1|site/block)</tt> = <tt>(1|site)+(1|site:block)</tt></td>
+<td>intercept varying among sites and among blocks within sites (nested random effects)</td>
+</tr>
+<tr>
+<td><tt>site+(1|site:block)</tt></td>
+<td><em>fixed</em> effect of sites plus random variation in intercept among blocks within sites</td>
+</tr>
+<tr>
+<td><tt>(x|site/block)</tt> = <tt>(x|site)+(x|site:block)</tt> = <tt>(1 + x|site)+(1+x|site:block)</tt></td>
+<td>slope and intercept varying among sites and among blocks within sites</td>
+</tr>
+<tr>
+<td><tt>(x1|site)+(x2|block)</tt></td>
+<td>two different effects, varying at different levels</td>
+</tr>
+<tr>
+<td><tt>x*site+(x|site:block)</tt></td>
+<td>fixed effect variation of slope and intercept varying among sites and random variation of slope and intercept among blocks within sites</td>
+</tr>
+<tr>
+<td><tt>(1|group1)+(1|group2)</tt></td>
+<td>intercept varying among crossed random effects (e.g. site, year)</td>
+</tr>
+</table>
+<p><a href="http://www.rensenieuwenhuis.nl/r-sessions-16-multilevel-model-specification-lme4/">Another possibly useful treatment</a></p>
+<p><a name="spatiotemporal"></a></p>
+<h3 id="toc28"><span>Spatial and temporal correlation models, heteroscedasticity (&quot;R-side&quot; models)</span></h3>
+<p>In <tt>nlme</tt> these so-called <strong>R-side</strong> (R for &quot;residual&quot;) structures are accessible via the <tt>weights</tt>/<tt>VarStruct</tt> (heteroscedasticity) and <tt>correlation</tt>/<tt>corStruct</tt> (spatial or temporal correlation) arguments and data structures. This extension is a bit harder than it might seem. In LMMs it is a natural extension to allow the residual error terms to be components of a single multivariate normal draw; if that MVN distribution is uncorrelated and homoscedastic (i.e. proportional to an identity matrix) we get the classic model, but we can in principle allow it to be correlated and/or heteroscedastic.</p>
+<p>It is not too hard to define marginal correlation structures that don't make sense. One class of reasonably sensible models is to always assume an observation-level random effect (as MCMCglmm does for computational reasons) and to allow that random effect to be MVN on the link scale (so that the full model is lognormal-Poisson, logit-normal binomial, etc., depending on the link function and family).</p>
+<p>For example, a relatively simple Poisson model with spatially correlated errors might look like this:</p>
+<span class="equation-number">(1)</span>
+<div class="math-equation" id="equation-1">\begin{align} \eta \sim MVN(a + b x, \Sigma) \end{align}</div>
+<span class="equation-number">(2)</span>
+<div class="math-equation" id="equation-2">\begin{align} \Sigma_{ij} = \sigma^2 \exp(-d_{ij}/s) \end{align}</div>
+<span class="equation-number">(3)</span>
+<div class="math-equation" id="equation-3">\begin{align} y_i \sim \mbox{Poisson}(\lambda=\exp(\eta_i)) \end{align}</div>
+<p>That is, the marginal distributions of the response values are Poisson-lognormal, but on the link (log) scale the latent Normal variables underlying the response are <em>multivariate</em> normal, with a variance-covariance matrix described by an exponential spatial correlation function with scale parameter <span class="math-inline">$s$</span>.</p>
+<p>How can one achieve this?</p>
+<ul>
+<li>These types of models are not implemented in <tt>lme4</tt>, for either LMMs or GLMMs; they are fairly low priority, and it is hard to see how they could be implemented for GLMMs (the equivalent for LMMs is tedious but should be straightforward to implement).</li>
+<li>For LMMs, you can use the spatial/temporal correlation structures that are built into (n)lme</li>
+<li>You can use the spatial/temporal correlation structures available for (n)lme, which include basic geostatistical (space) and ARMA-type (time) models.</li>
+</ul>
+<div class="code">
+<pre>
+<code>library(&quot;sos&quot;)
+findFn(&quot;corStruct&quot;)</code>
+</pre></div>
+<br />
+finds additional possibilities in the <tt>ramps</tt> (extended geostatistical) and <tt>ape</tt> (phylogenetic) packages.
+<ul>
+<li>You can use these structures in GLMMs via <tt>MASS::glmmPQL</tt> (see Dormann et al.)</li>
+<li>geepack::geeglm</li>
+<li>geoR, geoRglm (power tools); these are mostly designed for fitting spatial random field GLMMs via MCMC &#8212; not sure that they do random effects other than the spatial random effect</li>
+<li><a href="http://r-inla.org">R-INLA</a> (super-power tool)</li>
+<li>it is possible to use AD Model Builder to fit spatial GLMMs, as shown in these <a href="http://admb-project.org/examples/spatial-models">AD Model Builder examples</a>; this capability is not in the glmmADMB package (and may not be for a while!), but it would be possible to run AD Model Builder via the R2admb package (requires installing &#8212; and learning! ADMB)</li>
+<li>[geoBUGS <a href="http://mathstat.helsinki.fi/openbugs/Manuals/GeoBUGS/Manual.html">http://mathstat.helsinki.fi/openbugs/Manuals/GeoBUGS/Manual.html</a>], the geostatistical/spatial correlation module for WinBUGS, is another alternative (but again requires going outside of R)</li>
+</ul>
+<p>#nestedorcrossed</p>
+<h3 id="toc29"><span>Nested or crossed?</span></h3>
+<ul>
+<li>Relatively few mixed effect modeling packages can handle crossed random effects, i.e. those where one level of a random effect can appear in conjunction with more than one level of another effect. (This definition is confusing, and I would happily accept a better one.) A classic example is crossed temporal and spatial effects. If there is random variation among temporal blocks (e.g. years) ''and'' random variation among spatial blocks (e.g. sites), ''and'' if there is a consistent year effect across sites and ''vice versa'', then the random effects should be treated as crossed.</li>
+<li><tt>lme4</tt> does handled crossed effects, efficiently; if you need to deal with crossed REs in conjunction with some of the features that <tt>nlme</tt> offers (e.g. heteroscedasticity of residuals via <tt>weights</tt>/<tt>varStruct</tt>, correlation of residuals via <tt>correlation</tt>/<tt>corStruct</tt>, see p. 163ff of Pinheiro and Bates 2000 [<a href="javascript:;" class="bibcite" id="bibcite-23-33242a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-23')">23</a>] (section 4.2.2, <a href="http://tinyurl.com/crossedRE">Google books link</a> )</li>
+<li>I rarely find it useful to think of fixed effects as &quot;nested&quot; (although others disagree); if for example treatments A and B are only measured in block 1, and treatments C and D are only measured in block 2, one still assumes (because they are fixed effects) that each treatment would have the same effect if applied in the other block. (One might like to estimate treatment-by-block interactions, but in this case the experimental design doesn't allow it; one would have to have multiple treatments measured within each block, although not necessarily all treatments in every block.) One would code this analysis as <tt>response~treatment+(1|block)</tt> in <tt>lme4</tt>.</li>
+<li>Whether you explicitly specify a random effect as nested or not depends (in part) on the way the levels of the random effects are coded. If the 'lower-level' random effect is coded with unique levels, then the two syntaxes <tt>(1|a/b)</tt> (or <tt>(1|a+a:b)</tt>) and <tt>(1|a)+(1|b)</tt> are equivalent. If the lower-level random effect has the same labels within each larger group (e.g. blocks 1, 2, 3, 4 within sites A, B, and C) then the explicit nesting <tt>(1|a/b)</tt> is required. It seems to be considered best practice to code the nested level uniquely (e.g. A1, A2, &#8230;, B1, B2, &#8230;) so that confusion between nested and crossed effects is less likely.</li>
+</ul>
+<h3 id="toc30"><span>Do I have the right syntax corresponding to my design?</span></h3>
+<p>(examples of common designs?)</p>
+<h3 id="toc31"><span>Do I have to specify the levels of fixed effects in lmer?</span></h3>
+<p>No. See Doug Bates reply to this question here:<br />
+<a href="http://r.789695.n4.nabble.com/lme4-and-Variable-level-detection-td881680.html">http://r.789695.n4.nabble.com/lme4-and-Variable-level-detection-td881680.html</a></p>
+<p><a name="fixed_vs_random"></a></p>
+<h3 id="toc32"><span>Should I treat factor xxx as fixed or random?</span></h3>
+<p>Or, <strong>why is RLRsim not working when I try to test a random effect?</strong></p>
+<p>This is in general a far more difficult question than it seems on the surface. There are many competing philosophies and definitions. For example, from Gelman 2005 [<a href="javascript:;" class="bibcite" id="bibcite-15-1241a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-15')">15</a>]:</p>
+<blockquote>
+<p>Before discussing the technical issues, we briefly review what is meant by fixed and random effects. It turns out that different—in fact, incompatible—definitions are used in different contexts. [See also Kreft and de Leeuw (1998), Section 1.3.3, for a discussion of the multiplicity of definitions of fixed and random effects and coefficients, and Robinson (1998) for a historical overview.] Here we outline five definitions that we have seen: 1. Fixed effects are constant across individuals, and random effects vary. For example, in a growth study, a model with random intercepts αi and fixed slope β corresponds to parallel lines for different individuals i, or the model yit = αi + βt. Kreft and de Leeuw [(1998), page 12] thus distinguish between fixed and random coefficients. 2. Effects are fixed if they are interesting in themselves or random if there is interest in the underlying population. Searle, Casella and McCulloch [(1992), Section 1.4] explore this distinction in depth. 3. “When a sample exhausts the population, the corresponding variable is fixed; when the sample is a small (i.e., negligible) part of the population the corresponding variable is random” [Green and Tukey (1960)]. 4. “If an effect is assumed to be a realized value of a random variable, it is called a random effect” [LaMotte (1983)]. 5. Fixed effects are estimated using least squares (or, more generally, maximum likelihood) and random effects are estimated with shrinkage [“linear unbiased prediction” in the terminology of Robinson (1991)]. This definition is standard in the multilevel modeling literature [see, e.g., Snijders and Bosker (1999), Section 4.2] and in econometrics.</p>
+</blockquote>
+<p>Another useful comment (via Kevin Wright) reinforcing the idea that &quot;random vs. fixed&quot; is not a simple, cut-and-dried decision: from [<a href="javascript:;" class="bibcite" id="bibcite-26-48141a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-26')">26</a>], p. 627</p>
+<blockquote>
+<p>Before proceeding further with random field linear models we need to remind the reader of the adage that one modeler's random effect is another modeler's fixed effect.</p>
+</blockquote>
+<p>Clark and Linzer (2013) have an <a href="http://www.tomclarkphd.com/workingpapers/randomeffects.pdf">unpublished paper</a> addressing this question from a mostly econometric perspective, focusing mostly on practical variance/bias/RMSE criteria.</p>
+<p>One point of particular relevance to 'modern' mixed model estimation (rather than 'classical' method-of-moments estimation) is that, for practical purposes, there must be a reasonable number of random-effects levels (e.g. blocks) &#8212; more than 5 or 6 at a minimum. This is not surprising if you consider that random effects estimation is trying to estimate an among-block variance. For example, from Crawley [<a href="javascript:;" class="bibcite" id="bibcite-12-29749a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-12')">12</a>] p. 670:</p>
+<blockquote>
+<p>Are there enough levels of the factor in the data on which to base an estimate of the variance of the population of effects? No, means [you should probably treat the variable as] fixed effects.</p>
+</blockquote>
+<p>Some researchers (who treat fixed vs random as a philosophical rather than a pragmatic decision) object to this approach.</p>
+<p>Treating factors with small numbers of levels as random will in the best case lead to very small and/or imprecise estimates of random effects; in the worst case it will lead to various numerical difficulties such as lack of convergence, zero variance estimates, etc.. (A small <a href="http://rpubs.com/bbolker/4187">simulation exercise</a> shows that at least the estimates of the standard deviation are downwardly biased in this case; it's not clear whether/how this bias would affect the point estimates of fixed effects or their estimated confidence intervals.) In the classical method-of-moments approach these problems may not arise (because the sums of squares are always well defined as long as there are at least two units), but the underlying problems of lack of power are there nevertheless.</p>
+<p>Also see <a href="https://stat.ethz.ch/pipermail/r-sig-mixed-models/2010q2/003709.html">this thread</a> on the r-sig-mixed-models mailing list.</p>
+<p><a name="singular_fits"></a></p>
+<h3 id="toc33"><span>Why is my random effect variance estimated as zero, or correlations estimated as +/- 1? What should I do about it?</span></h3>
+<p>It is very common for somewhat overfitted models (i.e., models that are more complex than the data can support, e.g. because there are too few levels of the random effect &#8212; see previous section) to result in singular fits. Technically this means that some of the &quot;theta&quot; (variance-covariance Cholesky decomposition) parameters are exactly zero, which is the edge of the feasible space, or equivalently that the variance-covariance matrix has some zero eigenvalues (i.e. is positive semidefinite rather than positive definite), or (*almost* equivalently) that some of the variances are estimated as zero or some of the correlations are estimated as +/-1. This is most commonly (but not always) a problem with small numbers of random-effect levels, as illustrated in <a href="http://rpubs.com/bbolker/4187">these simulations</a> and discussed (in a somewhat different, Bayesian context) by Gelman [<a href="javascript:;" class="bibcite" id="bibcite-16-12034a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-16')">16</a>].</p>
+<ul>
+<li>One alternative (suggested by Robert LaBudde) is to &quot;fit the model with the random factor as a fixed effect, get the level coefficients in the sum to zero form, and then compute the standard deviation of the coefficients.&quot; This is appropriate for users who are (a) primarily interested in measuring variation (i.e. the random effects are not just nuisance parameters, and the variability [rather than the estimated values for each level] is of scientific interest), (b) unable or unwilling to use other approaches (e.g. MCMC with half-Cauchy priors in WinBUGS), (c) unable or unwilling to collect more data. For the simplest case (balanced, orthogonal, nested designs with normal errors) these estimates of standard deviations should equal the classical method-of-moments estimates.</li>
+<li>You could use the blme package, based on [<a href="javascript:;" class="bibcite" id="bibcite-11-21656a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-11')">11</a>], which penalizes the likelihood expression to get an approximation of a Bayesian maximum *a posteriori* estimate with a weakly informative prior that pushes the estimates away from singularity.</li>
+<li>Another option is to use the MCMCglmm package with weakly (or strongly) informative priors on the variance-covariance matrix, or more generally to use a Bayesian approach with somewhat more informative priors.</li>
+</ul>
+<h2 id="toc34"><span>Miscellaneous/procedural</span></h2>
+<h3 id="toc35"><span>How do you pronounce lmer/glmer etc.?</span></h3>
+<ul>
+<li><tt>lmer</tt>: I have heard &quot;ell emm ee arr&quot; (i.e. pronouncing each letter); &quot;elmer&quot; (probably most common); and &quot;lemur&quot;</li>
+<li><tt>glmer</tt>: &quot;gee ell emm ee arr&quot;, &quot;gee elmer&quot;, &quot;glimmer&quot;, or &quot;gleamer&quot;</li>
+<li>for <tt>lme</tt> and <tt>nlme</tt> people just seem to spell out the names (rather than saying e.g. &quot;lemmy&quot; and &quot;nelmy&quot;)</li>
+</ul>
+<p><a name="errors"></a></p>
+<h3 id="toc36"><span>Common errors (convergence failures etc.)</span></h3>
+<p><a name="error_anova_lmer_AIC"></a></p>
+<ul>
+<li>As pointed out by several users (<a href="https://stat.ethz.ch/pipermail/r-help/2009-April/195135.html">here</a>, <a href="https://stat.ethz.ch/pipermail/r-sig-mixed-models/2010q1/003473.html">here</a>, and <a href="https://stat.ethz.ch/pipermail/r-help/2012-December/332624.html">here</a>, for example), the AICs computed for lmer models in <tt>summary</tt> and <tt>anova</tt> are different; <tt>summary</tt> uses the REML specification as specified when fitting the model, while <tt>anova</tt> always uses REML=FALSE (to safeguard users against incorrectly using restricted MLs to compare models with different fixed effect components). (This behavior is slightly overzealous since users might conceivably be using <tt>anova</tt> to compare models with different <strong>random</strong> effects [although this also subject to boundary effects as described elsewhere in this document &#8230;])</li>
+<li><tt>Error: Length(f1) == length(f2) is not TRUE</tt>, typically accompanied by a warning that <tt>numerical expression has xxx elements: only the first used</tt>: make sure that your grouping variables are all factors.</li>
+<li><tt>mer_finalize(ans) : gr cannot be computed at initial par (65)</tt> warning, followed by <tt>Error in asMethod(object) : matrix is not symmetric [1,2]</tt>, <strong>or</strong> <tt>Error in mer_finalize(ans) : Downdated X'X is not positive definite, 1.</tt> <strong>or</strong> <tt>Error &#8230; rank of X = &lt;m&gt; &lt; ncol(X) = &lt;n&gt;</tt>:
+<ul>
+<li>especially if this happens on the first step (the number at the end of the error message is &quot;1&quot;), you may have incorporated some perfectly collinear terms in your design matrix (see <a href="http://stats.stackexchange.com/questions/35071/what-is-rank-deficiency-and-how-to-deal-with-it">this Stack Exchange question</a> for further information). To confirm that this problem, try a <tt>glm</tt> or <tt>lm</tt> fit (i.e. dropping the random effects) and see if some of the parameters are set to <tt>NA</tt>. (Whether linear modeling software can handle rank-deficient cases depends on the details of the computational linear algebra routines used: so far, those used in <tt>lme4</tt> have traded the robustness of being able to handle rank-deficiency for speed). One example of a workaround (constructing the design matrix by hand, or in <tt>glm</tt>, and then dropping the collinear terms) is shown <a href="http://article.gmane.org/gmane.comp.lang.r.general/276472">here</a>.</li>
+<li>Alternatively, you may just have <em>mostly</em> collinear (rather than perfectly collinear) terms. Try centering and scaling your data (usually a good idea anyway, and centering removes the correlation between the intercept and the other predictors). Also check the correlation of the predictors, and if they are strongly correlated try some of the standard tactics &#8212; discard predictors, use principal components analysis, &#8230;</li>
+</ul>
+</li>
+<li><tt>Error in UseMethod(&quot;ranef&quot;) : no applicable method for 'ranef' applied to an object of class &quot;mer&quot;</tt>: this is usually caused by package conflicts, especially with the <tt>nlme</tt> package. Try <tt>detach(&quot;package:nlme&quot;)</tt> (the <tt>glmmADMB</tt> package may also cause such errors).</li>
+<li>Other warnings about &quot;false convergence&quot; often indicates model mis-specification, or insufficient data for estimation; they do not necessarily indicate an error, but results that should be scrutinized particularly carefully. Replicate the analysis in another package, if possible; make sure that the results are consistent with those of a simplified version of the model. Another approach is to use a Bayesian model with stabilizing priors (see MCMCglmm, or brglm)</li>
+<li><tt>function 'cholmod_start' not provided by package 'Matrix'</tt>: this error, and errors like it, are due to the <tt>lme4</tt> and <tt>Matrix</tt> package being out of sync. Here is a table giving versions that do seem to work:</li>
+</ul>
+<table class="wiki-content-table">
+<tr>
+<td>Type</td>
+<td>OS</td>
+<td>R version</td>
+<td>Source</td>
+<td>lme4 version</td>
+<td>Matrix version</td>
+<td>works?</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>(Ubuntu 10.04)</td>
+<td>2.13.0</td>
+<td>CRAN</td>
+<td>0.999375-39</td>
+<td>0.999375-50</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>(Ubuntu 10.04)</td>
+<td>2.13.0</td>
+<td>R-forge</td>
+<td>0.999375-40</td>
+<td>0.9996875-0</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>(Ubuntu 10.04)</td>
+<td>2.13.0</td>
+<td>SVN</td>
+<td>0.999375-40 (r1322)</td>
+<td>0.9996875-0 (r2678)</td>
+<td>yes</td>
+</tr>
+</table>
+<h3 id="toc37"><span>How do I store information?</span></h3>
+<p>Copied from <a href="https://stat.ethz.ch/pipermail/r-help/2012-February/302767.html">https://stat.ethz.ch/pipermail/r-help/2012-February/302767.html</a> :</p>
+<p>There's a somewhat hack-ish solution, which is to use options(warn=2)<br />
+to 'upgrade' warnings to errors, and then use try() or tryCatch() to<br />
+catch them.</p>
+<p>More fancily, I used code that looked something like this to save<br />
+warnings as I went along (sorry about the &#171;- ) in a recent simulation<br />
+study. You could also check w$message to do different things in the<br />
+case of different warnings.</p>
+<div class="code">
+<pre>
+<code>## have to set up a 3D warn array first ...
+withCallingHandlers(tryCatch(fun(n=nvec[j],tau=tauvec[i],...),
+                error = function(e) {
+                  warn[k,i,j] &lt;&lt;- paste(&quot;ERROR:&quot;,e$message)
+              NA_ans}),
+               warning = function(w) {
+                  warn[k,i,j] &lt;&lt;- w$message
+                  invokeRestart(&quot;muffleWarning&quot;)
+             })</code>
+</pre></div>
+<p>The most recent (development/shortly (Aug 2013) to be released) versions of lme4 contain an @optinfo slot that stores warnings.</p>
+<h3 id="toc38"><span>Zero or very small random effects variance estimates; large (=1.0) estimates of correlation</span></h3>
+<ul>
+<li>(maximum likelihood estimate may be zero, even for cases where the 'true' variance is non-zero (e.g. in simulations)</li>
+<li>Very small variance estimates, or very large correlation estimates, often indicates unidentifiability/lack of data (either due to exact identifiability [e.g. designs that are not replicated at an important level] or weak identifiable (designs that would be workable with more data of the same type)</li>
+</ul>
+<h3 id="toc39"><span>Standard errors of variance estimates</span></h3>
+<ul>
+<li>Paraphrasing Doug Bates: the sampling distribution of variance estimates is in general strongly asymmetric: the standard error may be a poor characterization of the uncertainty.</li>
+<li><em>Alternatives?</em>
+<ul>
+<li>The development version of lme4, lme4a, allows for computing likelihood profiles of variances and computing confidence intervals on their basis; see ch. 1 of [<a href="javascript:;" class="bibcite" id="bibcite-5-56274a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-5')">5</a>]. These confidence intervals will be based on the likelihood ratio test (i.e. asymptotic chi-squared distribution of the deviance), hence are subject to the usual caveats about the LRT with finite sample sizes. It's also not entirely clear whether the caveats about hypothesis testing against null values on the boundary of the feasible space apply &#8230;</li>
+<li>Using an MCMC-based approach (the simplest/most canned is probably to use the <tt>MCMCglmm</tt> package, although its mode specifications are not identical to those of lme4) will provide posterior distributions of the variance parameters: quantiles or credible intervals (HPDinterval() in the <tt>coda</tt> package) will characterize the uncertainty.</li>
+<li>(don't say we didn't warn you &#8230;) <tt>[n]lme</tt> fits contain an element called <tt>apVar</tt> which contains the approximate variance-covariance matrix (derived from the Hessian, the matrix of (numerically approximated) second derivatives of the likelihood (REML?) at the maximum (restricted?) likelihood values): you can derive the standard errors from this list element via <tt>sqrt(diag(lme.obj$apVar))</tt>. For whatever it's worth, though, <a href="http://www.biostat.wustl.edu/archives/html/s-news/2003-07/msg00127.html">these estimates might not match</a> the <a href="http://www.tau.ac.il/cc/pages/docs/sas8/stat/chap41/sect25.htm#mixedcpe">estimates that SAS gives</a> which are supposedly derived in the same way.</li>
+</ul>
+</li>
+</ul>
+<h3 id="toc40"><span>Confidence intervals on conditional means/BLUPs/random effects</span></h3>
+<h4 id="toc41"><span>lme4</span></h4>
+<p>(From Harold Doran, updated by Assaf Oron Nov. 2013:)</p>
+<p>If you want the standard errors of the conditional means, then you can extract them as follows:</p>
+<div class="code">
+<pre>
+<code>fm1 &lt;- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
+cV &lt;- ranef(fm1, condVar = TRUE)</code>
+</pre></div>
+<br />
+<tt>cV</tt> is a list; each element is a data frame containing the conditional modes for a particular grouping factor. If you use scalar random effects (typically random intercepts), then specifying <tt>ranef(&#8230;,drop=TRUE)</tt> will return the conditional modes as a single named vector instead.
+<p>The conditional variances are returned as an attribute of the conditional modes.<br />
+For example, if we set</p>
+<div class="code">
+<pre>
+<code>ranvar &lt;- attr(cV[[1]], &quot;postVar&quot;)</code>
+</pre></div>
+<br />
+then <tt>ranvar</tt> is a 3-D array (the attribute is still called <tt>postVar</tt>, rather than <tt>condVar</tt>, for historical reasons/backward compatibility). Individual-level covariance matrices of the conditional modes will sit on the <tt>[,,i]</tt> faces. For example:
+<div class="code">
+<pre>
+<code>sqrt(diag(ranvar[,,1]))</code>
+</pre></div>
+<br />
+will provide the intercept and slope standard errors for the first group's conditional modes. If you have a scalar random effect and used <tt>drop=TRUE</tt> in <tt>ranef()</tt>, then you will (mercifully) receive only a vector of individual variances here (one for each level of the grouping factor).
+<p>See also section 1.6 of [<a href="javascript:;" class="bibcite" id="bibcite-5-58212a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-5')">5</a>].</p>
+<p>Also, note that at a minimum, the uncertainty of the fixed-effect intercept estimate needs to be incorporated as well; probably manually (remember, the model assumes the fixed and random effects to be orthogonal, so this is straightforward). If you predict on an individual with specific fixed-effect covariate values, those need incorporation too.</p>
+<p><a name="predconf"></a></p>
+<h3 id="toc42"><span>Predictions and/or confidence (or prediction) intervals on predictions</span></h3>
+<p>Note that none of the following approaches takes the uncertainty<br />
+of the random effects parameters into account &#8230;</p>
+<p>The general recipe for computing predictions from a linear or generalized linear model is to</p>
+<ul>
+<li>figure out the model matrix <span class="math-inline">$X$</span> corresponding to the new data;</li>
+<li>* matrix-multiply <span class="math-inline">$X$</span> by the parameter vector <span class="math-inline">$\beta$</span> to get the predictions (or linear predictor in the case of GLM(M)s);</li>
+<li>extract the variance-covariance matrix of the parameters <span class="math-inline">$V$</span></li>
+<li>compute <span class="math-inline">$X V X^{\prime}$</span> to get the variance-covariance matrix of the predictions;</li>
+<li>extract the diagonal of this matrix to get variances of predictions;</li>
+<li>if computing prediction rather than confidence intervals, add the residual variance;</li>
+<li>take the square-root of the variances to get the standard deviations (errors) of the predictions;</li>
+<li>compute confidence intervals based on a Normal approximation;</li>
+<li>for GL(M)Ms, run the confidence interval boundaries (not the standard errors) through the inverse-link function.</li>
+</ul>
+<h4 id="toc43"><span>lme</span></h4>
+<div class="code">
+<pre>
+<code>library(&quot;nlme&quot;) 
+fm1 &lt;- lme(distance ~ age*Sex, random = ~ 1 + age | Subject,
+           data = Orthodont) 
+
+plot(Orthodont,asp=&quot;fill&quot;) ## plot responses by individual
+## note that expand.grid() orders factor levels by *order of
+## appearance* -- must match levels(Orthodont$Sex)
+newdat &lt;- expand.grid(age=c(8,10,12,14), Sex=c(&quot;Female&quot;,&quot;Male&quot;)) 
+newdat$pred &lt;- predict(fm1, newdat, level = 0)
+
+## [-2] drops response from formula
+Designmat &lt;- model.matrix(formula(fm1)[-2], newdat)
+predvar &lt;- diag(Designmat %*% vcov(fm1) %*% t(Designmat)) 
+newdat$SE &lt;- sqrt(predvar) 
+newdat$SE2 &lt;- sqrt(predvar+fm1$sigma^2)
+
+library(ggplot2) 
+pd &lt;- position_dodge(width=0.4) 
+g0 &lt;- ggplot(newdat,aes(x=age,y=pred,colour=Sex))+ 
+   geom_point(position=pd)
+cmult &lt;- 2  ## could use 1.96 instead
+g0 + geom_linerange(aes(ymin=pred-cmult*SE,ymax=pred+cmult*SE), position=pd)
+
+## prediction intervals 
+g0 + geom_linerange(aes(ymin=pred-cmult*SE2,ymax=pred+cmult*SE2), position=pd)</code>
+</pre></div>
+<p>A similar answer is laid out in the responses to this <a href="http://stackoverflow.com/questions/14358811/extract-prediction-band-from-lme-fit">StackOverflow question</a>.</p>
+<h4 id="toc44"><span>lme4</span></h4>
+<p>Current versions of lme4 have a <tt>predict</tt> method.</p>
+<div class="code">
+<pre>
+<code>library(&quot;lme4&quot;)
+library(&quot;ggplot2&quot;) # Plotting
+data(&quot;Orthodont&quot;,package=&quot;MEMSS&quot;)
+fm1 &lt;- lmer(
+    formula = distance ~ age*Sex + (age|Subject)
+    , data = Orthodont
+)
+newdat &lt;- expand.grid(
+    age=c(8,10,12,14)
+    , Sex=c(&quot;Female&quot;,&quot;Male&quot;)
+    , distance = 0
+)
+mm &lt;- model.matrix(terms(fm1),newdat)
+newdat$distance &lt;- predict(fm1,newdat,re.form=NA)
+## or newdat$distance &lt;- mm %*% fixef(fm1)
+pvar1 &lt;- diag(mm %*% tcrossprod(vcov(fm1),mm))
+tvar1 &lt;- pvar1+VarCorr(fm1)$Subject[1]  ## must be adapted for more complex models
+cmult &lt;- 2 ## could use 1.96
+newdat &lt;- data.frame(
+    newdat
+    , plo = newdat$distance-cmult*sqrt(pvar1)
+    , phi = newdat$distance+cmult*sqrt(pvar1)
+    , tlo = newdat$distance-cmult*sqrt(tvar1)
+    , thi = newdat$distance+cmult*sqrt(tvar1)
+)
+#plot confidence
+g0 &lt;- ggplot(newdat, aes(x=age, y=distance, colour=Sex))+geom_point()
+g0 + geom_errorbar(aes(ymin = plo, ymax = phi))+
+    labs(title=&quot;CI based on fixed-effects uncertainty ONLY&quot;)
+#plot prediction
+g0 + geom_errorbar(aes(ymin = tlo, ymax = thi))+
+    labs(title=&quot;CI based on FE uncertainty + RE variance&quot;)</code>
+</pre></div>
+<p><a name="glmmadmb-predict"></a></p>
+<h4 id="toc45"><span>glmmadmb</span></h4>
+<div class="code">
+<pre>
+<code>library(glmmADMB)
+data(Orthodont,package=&quot;nlme&quot;)
+fm2 &lt;- glmmadmb(distance ~ age*Sex, random = ~ 1 + age | Subject,
+                data = Orthodont,
+                family=&quot;gaussian&quot;) 
+
+## make prediction data frame
+newdat &lt;- expand.grid(age=c(8,10,12,14), Sex=c(&quot;Female&quot;,&quot;Male&quot;))
+## design matrix (fixed effects)
+mm &lt;- model.matrix(delete.response(terms(fm2)),newdat)
+## linear predictor (for GLMMs, back-transform this with the
+##  inverse link function (e.g. plogis() for binomial, beta;
+##  exp() for Poisson, negative binomial
+newdat$distance &lt;- mm %*% fixef(fm2)
+
+predvar &lt;- diag(mm %*% vcov(fm2) %*% t(mm))
+newdat$SE &lt;- sqrt(predvar) 
+newdat$SE2 &lt;- sqrt(predvar+fm2$alpha^2)</code>
+</pre></div>
+<p>(Probably overly complicated) ggplot code:</p>
+<div class="code">
+<pre>
+<code>library(ggplot2) 
+pd &lt;- position_dodge(width=0.4)
+theme_update(theme_bw())
+g0 &lt;- ggplot(Orthodont,aes(x=age,y=distance,colour=Sex))+
+    stat_sum(alpha=0.2,aes(size=..n..))+
+    scale_size_continuous(breaks=1:4,range=c(2,5))
+g1 &lt;- g0+geom_line(data=newdat,position=pd)+
+      geom_point(data=newdat,shape=17,size=3,position=pd)
+g1 + geom_linerange(data=newdat,
+                    aes(ymin=distance-2*SE,ymax=distance+2*SE), position=pd)
+
+## prediction intervals 
+g1 + geom_linerange(data=newdat,
+                    aes(ymin=pred-2*SE2,ymax=pred+2*SE2), position=pd)</code>
+</pre></div>
+<p><a name="lme-comp"></a></p>
+<h3 id="toc46"><span>Should I use aov(), nlme, or lme4, or some other package?</span></h3>
+<ul>
+<li>aov (in the <tt>stats</tt> package in base R: balanced, orthogonal designs only (R analogue of SAS PROC GLM)</li>
+<li><tt>nlme</tt> (analogue of SAS PROC MIXED/NLMIXED)
+<ul>
+<li>allows more complex designs than <tt>aov</tt> (unbalanced, heteroscedasticity and/or correlation among residual errors)</li>
+<li>more mature than <tt>lme4</tt></li>
+<li>well-documented [<a href="javascript:;" class="bibcite" id="bibcite-23-90554a" onclick="WIKIDOT.page.utils.scrollToReference('bibitem-23')">23</a>]</li>
+<li>implements R-side effects (heteroscedasticity and correlation)</li>
+<li>estimates &quot;denominator degrees of freedom&quot; for $$F$$ statistics, and hence $$p$$ values, for LMMs (but see above)</li>
+</ul>
+</li>
+<li>stable lme4 (also SAS PROC MIXED/NLMIXED):
+<ul>
+<li>fastest</li>
+<li>best for crossed designs (although they are possible in <tt>lme</tt>)</li>
+<li>GLMMs</li>
+<li>cutting-edge (for better or worse!)</li>
+<li>likelihood profiles (development version only)</li>
+<li>use `lme4` for GLMMs, or if you have big data (thousands to tens of thousands of records)</li>
+</ul>
+</li>
+<li>development <tt>lme4</tt>, from github:
+<ul>
+<li>likelihood profiles</li>
+<li>predict method (missing from stable <tt>lme4</tt>)</li>
+</ul>
+</li>
+<li>also see the <a href="/pkg-comparison">package comparison</a> page</li>
+</ul>
+<p><a name="mixed-pkgs"></a></p>
+<h1 id="toc47"><span>Mixed modeling packages</span></h1>
+<p><em>modified from a contribution by Kingsford Jones, found 2010-03-16 on</em> [<a href="http://cran.r-project.org/web/packages/">http://cran.r-project.org/web/packages/</a>]</p>
+<p>See a <a href="/pkg-comparison">package comparison</a>: estimation and inference methods available, accessors defined, etc.</p>
+<h3 id="toc48"><span>linear and nonlinear mixed models</span></h3>
+<ul>
+<li><a href="http://cran.r-project.org/web/packages/lme4/index.html">lme4</a> &#8212; Linear mixed-effects models using S4 classes</li>
+<li>lmm &#8212; Linear mixed models</li>
+<li>nlme &#8212; Linear and Nonlinear Mixed Effects Models</li>
+<li>sabreR</li>
+<li><a href="http://cran.r-project.org/web/packages/regress/index.html">regress</a> Linear mixed models</li>
+</ul>
+<h3 id="toc49"><span>GLMMs</span></h3>
+<ul>
+<li>glmmAK &#8212; Generalized Linear Mixed Models</li>
+<li>MASS &#8212; Main Package of Venables and Ripley's MASS (see function glmmPQL)</li>
+<li>MCMCglmm &#8212; MCMC Generalised Linear Mixed Models</li>
+<li>lme4 (glmer)</li>
+<li>glmmML</li>
+<li>gamlss.mx</li>
+<li>sabreR</li>
+</ul>
+<h3 id="toc50"><span>Additive and generalized-additive mixed models</span></h3>
+<ul>
+<li>amer &#8212; Additive mixed models with lme4</li>
+<li>gamm4 &#8212; Generalized additive mixed models using mgcv and lme4</li>
+<li>mgcv (gamm function, via glmmPQL in MASS package)</li>
+<li>gamlss.mx</li>
+</ul>
+<h3 id="toc51"><span>Hierarchical GLMs</span></h3>
+<ul>
+<li>hglm &#8212; hglm is used to fit hierarchical generalized linear models</li>
+<li>HGLMMM &#8212; Hierarchical Generalized Linear Models</li>
+</ul>
+<h3 id="toc52"><span>diagnostic and modeling frameworks</span></h3>
+<ul>
+<li>influence.ME &#8212; Tools for detecting influential data in mixed effects models</li>
+<li>arm &#8212; Data Analysis Using Regression and Multilevel/Hierarchical Models</li>
+<li>pamm &#8212; Power analysis for random effects in mixed models</li>
+<li>RLRsim &#8212; Exact (Restricted) Likelihood Ratio tests for mixed and additive models</li>
+<li>npde &#8212; Normalised prediction distribution errors for nonlinear mixed-effect models</li>
+<li>multilevel &#8212; Multilevel Functions (psychology-oriented; within-group agreement, random group resampling, etc.)</li>
+<li>languageR</li>
+<li>pbkrtest &#8212; parametric bootstrap and Kenward-Roger tests</li>
+</ul>
+<h3 id="toc53"><span>data and examples</span></h3>
+<ul>
+<li>MEMSS &#8212; Data sets from Mixed-effects Models in S</li>
+<li>mlmRev &#8212; Examples from Multilevel Modelling Software Review</li>
+<li>SASmixed &#8212; Data sets from &quot;SAS System for Mixed Models&quot;</li>
+</ul>
+<h3 id="toc54"><span>extensions</span></h3>
+<ul>
+<li>lmeSplines &#8212; lmeSplines</li>
+<li>lmec &#8212; Linear Mixed-Effects Models with Censored Responses</li>
+<li>kinship &#8212; mixed-effects Cox models, sparse matrices, and modeling data from large pedigrees</li>
+<li>coxme &#8212; Mixed Effects Cox Models</li>
+<li>ordinal &#8212; Regression Models for Ordinal Data</li>
+<li>phmm &#8212; Proportional Hazards Mixed-effects Model (PHMM)</li>
+<li>pedigreemm &#8212; Pedigree-based mixed-effects models</li>
+<li>(see also MCMCglmm for pedigree-based approaches)</li>
+<li>heavy &#8212; Estimation in the linear mixed model using heavy-tailed distributions</li>
+<li>GLMMarp &#8212; Generalized Linear Multilevel Model with AR(p) Errors Package</li>
+<li>glmmlasso &#8212; penalized GLMM fitting</li>
+<li>spatialCovariance &#8212; spatial covariance matrix calculations</li>
+</ul>
+<h3 id="toc55"><span>Interfaces to other systems</span></h3>
+<ul>
+<li>glmmBUGS &#8212; Generalised Linear Mixed Models and Spatial Models with BUGS</li>
+<li>Interfaces to WinBUGS/OpenBUGS/JAGS (roll your own model file):
+<ul>
+<li>R2WinBUGS</li>
+<li>r2jags</li>
+<li>rjags</li>
+<li>RBugs</li>
+</ul>
+</li>
+</ul>
+<h3 id="toc56"><span>modeling based on LMMs</span></h3>
+<ul>
+<li>nlmeODE &#8212; Non-linear mixed-effects modelling in nlme using differential equations</li>
+<li>longRPart &#8212; Recursive partitioning of longitudinal data using mixed-effects models</li>
+<li>PSM &#8212; Non-Linear Mixed-Effects modelling using Stochastic Differential Equations</li>
+</ul>
+<h2 id="toc57"><span>Off-CRAN mixed modeling packages:</span></h2>
+<h3 id="toc58"><span>R-forge:</span></h3>
+<ul>
+<li>glmmADMB (R-forge, interface to AD Model Builder)</li>
+<li>R2admb (R-forge; roll your own model file)</li>
+<li>spida, p3d (Georges Monette)</li>
+</ul>
+<h3 id="toc59"><span>Other open source:</span></h3>
+<ul>
+<li><a href="http://www.stat.umn.edu/geyer/bernor/">bernor</a> package (logit-normal fitting), by Yun Ju Sung and Charles J. Geyer</li>
+<li>glmm (in Jim Lindsey's <tt>repeated</tt> package: [<a href="http://www.commanster.eu/rcode.html">http://www.commanster.eu/rcode.html</a>])</li>
+</ul>
+<h3 id="toc60"><span>Commercial:</span></h3>
+<ul>
+<li>OpenMx &#8212; Advanced Structural Equation Modeling</li>
+<li>ASReml-R (commercial, but 30 days' free use/free license for academic or developing-country use available). Very good at complex LMMs (fast, flexible covariance structures, etc.), but only offers PQL for GLMMs, and the manual says:</li>
+</ul>
+<blockquote>
+<p>we cannot recommend the use of this technique for general use. It is included in the current version of asreml() for advanced users. It is highly recommended that its use be accompanied by some form of cross-validatory assessment for the specific dataset concerned.&quot;</p>
+</blockquote>
+<p>Resources:</p>
+<ul>
+<li><a href="http://rwiki.sciviews.org/doku.php?id=guides:tutorials:asreml">short R wiki tutorial</a></li>
+<li><a href="http://www.vsni.co.uk/downloads/asreml/release3/asreml-R.pdf">reference manual (PDF)</a></li>
+<li>Luis Apiolaza's <a href="http://apiolaza.net/asreml-r/">asreml-r cookbook</a></li>
+</ul>
+<h2 id="toc61"><span>Network pictures and code</span></h2>
+<p>Here is some code that uses the relatively new <tt>packdep</tt> package to find and plot the dependencies of lme4 and nlme on CRAN and r-forge: <a href="http://glmm.wdfiles.com/local--files/faq/lmerpkg.R">lmerpkg.R</a></p>
+<h3 id="toc62"><span>1-step dependencies of the lme4 package:</span></h3>
+<img src="http://glmm.wdfiles.com/local--files/faq/lme4dep1.png" alt="lme4dep1.png" class="image" />
+<h3 id="toc63"><span>2-step dependencies of the lme4 package:</span></h3>
+<img src="http://glmm.wdfiles.com/local--files/faq/lme4dep2.png" alt="lme4dep2.png" class="image" />
+<h1 id="toc64"><span>Bibliography</span></h1>
+<div class="bibitems">
+<div class="title">Bibliography</div>
+<div class="bibitem" id="bibitem-1">1. Agresti, Alan. 2002. Categorical Data Analysis. 2nd ed. Hoboken, NJ: Wiley.</div>
+<div class="bibitem" id="bibitem-2">2. Baayen, R., D. Davidson, and D. Bates. 2008. Mixed-effects modeling with crossed random effects for subjects and items. Journal of Memory and Language 59:390-412. <a href="http://dx.doi.org/doi:10.1016/j.jml.2007.12.005">doi: 10.1016/j.jml.2007.12.005</a>.</div>
+<div class="bibitem" id="bibitem-3">3. Baayen, R. H. 2008. Analyzing linguistic data. Cambridge University Press.</div>
+<div class="bibitem" id="bibitem-4">4. Barr, Dale J., Roger Levy, Christoph Scheepers, and Harry J. Tily. 2013. &quot;Random Effects Structure for Confirmatory Hypothesis Testing: Keep It Maximal.&quot; Journal of Memory and Language 68 (3) (April): 255–278. doi:10.1016/j.jml.2012.11.001. <a href="http://www.sciencedirect.com/science/article/pii/S0749596X12001180">http://www.sciencedirect.com/science/article/pii/S0749596X12001180</a>.</div>
+<div class="bibitem" id="bibitem-5">5. Bates, D. Unpublished. <tt>lme4</tt>: Mixed-effects modeling with R. [<a href="http://lme4.r-forge.r-project.org/book/">http://lme4.r-forge.r-project.org/book/</a>]</div>
+<div class="bibitem" id="bibitem-6">6. Bell, Melanie L., and Gary K. Grunwald. 2010. Small sample estimation properties of longitudinal count models. Journal of Statistical Computation and Simulation 81 (9): 1067-1079. <a href="http://www.tandfonline.com/doi/abs/10.1080/00949651003674144">doi:10.1080/00949651003674144</a></div>
+<div class="bibitem" id="bibitem-7">7. Berger, J. O. and Liseo, B. and Wolpert, R. L. 1999. Integrated likelihood methods for eliminating nuisance parameters. Statistical Science 14(1): 1-22.</div>
+<div class="bibitem" id="bibitem-8">8. Berridge, Damon M., and Robert Crouchley. 2011. Multivariate Generalized Linear Mixed Models Using R. Taylor and Francis, April 20.</div>
+<div class="bibitem" id="bibitem-9">9. Bolker, B. M., M. E. Brooks, C. J. Clark, S. W. Geange, J. R. Poulsen, M. H. H. Stevens, and J. S. White. 2009. Generalized linear mixed models: a practical guide for ecology and evolution. Trends in Ecology &amp; Evolution 24:127-135. <a href="http://dx.doi.org/10.1016/j.tree.2008.10.008">doi: 10.1016/j.tree.2008.10.008</a>.</div>
+<div class="bibitem" id="bibitem-10">10. Browne, W. J, S. V Subramanian, K. Jones, and H. Goldstein. 2005. “Variance partitioning in multilevel logistic models that exhibit overdispersion.” Journal of the Royal Statistical Society: Series A (Statistics in Society) 168 (3) (July 1): 599-613. <a href="http://dx.doi.org/10.1111/j.1467-985X.2004.00365.x">doi:10.1111/j.1467-985X.2004.00365.x.</a></div>
+<div class="bibitem" id="bibitem-11">11. Chung, Yeojin and Rabe-Hesketh, Sophia and Dorie, Vincent and Gelman, Andrew and Liu, Jingche. &quot;A Nondegenerate Penalized Likelihood Estimator for Variance Parameters in Multilevel Models&quot;. Psychometrika <a href="http://link.springer.com/article/10.1007/s11336-013-9328-2">doi:10.1007/s11336-013-9328-2</a>.</div>
+<div class="bibitem" id="bibitem-12">12. Crawley, M. J. 2002. Statistical Computing: An Introduction to Data Analysis using S-PLUS. John Wiley &amp; Sons.</div>
+<div class="bibitem" id="bibitem-13">13. Elston, D. A. and R. Moss and T. Boulinier and C. Arrowsmith and X. Lambin. 2001. Analysis of aggregation, a worked example: numbers of ticks on red grouse chicks. Parasitology 122(5): 563-569 <a href="http://dx.doi.org/10.1017/S0031182001007740">doi:10.1017/S0031182001007740</a>.</div>
+<div class="bibitem" id="bibitem-14">14. Feng, Ziding, Thomas Braun, and Charles McCulloch. 2004. Small Sample Inference for Clustered Data. In Proceedings of the Second Seattle Symposium in Biostatistics, ed. D. Y. Lin and P. J. Heagerty, 179:71-87. New York, NY: Springer New York. [<a href="http://www.springerlink.com/content/h2g33m7127790343/">http://www.springerlink.com/content/h2g33m7127790343/</a>].`</div>
+<div class="bibitem" id="bibitem-15">15. Gelman, A. 2005. Analysis of variance: why it is more important than ever. The Annals of Statistics, 33:1-53. <a href="http://dx.doi.org/10.1214/009053604000001048">doi:10.1214/009053604000001048</a></div>
+<div class="bibitem" id="bibitem-16">16. Gelman, A. 2006. “Prior Distributions for Variance Parameters in Hierarchical Models.” <a href="http://ba.stat.cmu.edu/journal/2006/vol01/issue03/gelman.pdf">Bayesian Analysis 1 (3): 515–33</a>.</div>
+<div class="bibitem" id="bibitem-17">17. Greven, Sonja, and Thomas Kneib. 2010. On the Behaviour of Marginal and Conditional Akaike Information Criteria in Linear Mixed Models. Biometrika 97, no. 4: 773-789. [<a href="http://www.bepress.com/jhubiostat/paper202/">http://www.bepress.com/jhubiostat/paper202/</a>].</div>
+<div class="bibitem" id="bibitem-18">18. Hughes, A. and King , M. (2003). Model selection using AIC in the presence of one-sided information. Journal of</div>
+Statistical Planning and Inference 115, 397–411.
+<div class="bibitem" id="bibitem-19">19. Lawson, A., Biggeri, A., Bohning, D., LeSaffre, E., Viel, J. F., and Bertollini, R. (eds) (1999). Disease Mapping and Risk Assessment for Public Health. Wiley, New York.</div>
+<div class="bibitem" id="bibitem-20">20. Littell, R. C., G. A. Milliken, W. W. Stroup, R. D. Wolﬁnger, and O. Schabenberger. 2006. SAS for Mixed Models, Second Edition. SAS Publishing.</div>
+<div class="bibitem" id="bibitem-21">21. Maindonald, J. and J. Braun. 2010.</div>
+Data Analysis and Graphics Using R, An Example-Based Approach. 3d ed., Cambridge University Press.
+<div class="bibitem" id="bibitem-22">22. Millar, R. B. 2011. Maximum Likelihood Estimation and Inference: With Examples in R, SAS and ADMB. John Wiley &amp; Sons.</div>
+<div class="bibitem" id="bibitem-23">23. Pinheiro, J. C., and D. M. Bates. 2000. Mixed-effects models in S and S-PLUS. Springer, New York.</div>
+<div class="bibitem" id="bibitem-24">24. Sophia Rabe-Hesketh and Anders Skrondal, 2008. Multilevel and Longitudinal Modeling Using Stata, 2nd Edition. <a href="http://www.stata-press.com/books/mlmus2.html">http://www.stata-press.com/books/mlmus2.html</a></div>
+<div class="bibitem" id="bibitem-25">25. Shane A. Richards. 2005. Testing ecological theory using the information-theoretic approach: examples and cautionary results. Ecology, 86(10), 2005, pp. 2805–2814.</div>
+<div class="bibitem" id="bibitem-26">26. Oliver Schabenberger and Francis J. Pierce. 2001. Contemporary Statistical Models for the Plant and Soil Sciences. CRC Press, Boca Raton, FL. ISBN 1584881119.</div>
+<div class="bibitem" id="bibitem-27">27. D. J. Spiegelhalter and N. Best and B. P. Carlin and A. Van der Linde. 2002. Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society B. 64:583-640.</div>
+<div class="bibitem" id="bibitem-28">28. Jürg Schelldorfer and Peter Bühlmann. GLMMLasso: An Algorithm for High-Dimensional Generalized Linear Mixed Models Using l1-Penalization. <a href="http://arxiv.org/pdf/1109.4003">arXiv</a></div>
+<div class="bibitem" id="bibitem-29">29. Walter W. Stroup. Rethinking the Analysis of Non-Normal Data in Plant and Soil Science. Agronomy Journal 106: 1–17. doi:10.2134/agronj2013.0342. [<a href="https://dl.sciencesocieties.org/publications/aj/articles/0/0/agronj2013.0342">https://dl.sciencesocieties.org/publications/aj/articles/0/0/agronj2013.0342</a>].</div>
+<div class="bibitem" id="bibitem-30">30. Vaida, Florin, and Suzette Blanchard. 2005. Conditional Akaike information for mixed-effects models. Biometrika 92, no. 2 (June 1): 351-370. doi:10.1093/biomet/92.2.351. <a href="http://biomet.oxfordjournals.org/cgi/content/abstract/92/2/351">abstract</a>.</div>
+<div class="bibitem" id="bibitem-31">31. Xu, R. 2003. Measuring explained variation in linear mixed effects models. Statist. Med. 22:3527-3541. <a href="http://dx.doi.org/10.1002/sim.1572">doi:10.1002/sim.1572</a></div>
+<div class="bibitem" id="bibitem-32">32. Zhang, Lu, Feng, Thurston, Yinglin Xia, Liang Zhu, and Xin M Tu. “On fitting generalized linear mixed‐effects models for binary responses using different statistical packages.” Statistics in Medicine. doi:10.1002/sim.4265. <a href="http://onlinelibrary.wiley.com/doi/10.1002/sim.4265/abstract">abstract</a>.</div>
+<div class="bibitem" id="bibitem-33">33. Zuur, A. F., E. N. Ieno, N. J. Walker, A. A. Saveliev, and G. M. Smith. 2009. Mixed Effects Models and Extensions in Ecology with R, 1st edition. Springer.</div>
+</div>
+<div class="footnotes-footer">
+<div class="title">Footnotes</div>
+<div class="footnote-footer" id="footnote-1"><a href="javascript:;" onclick="WIKIDOT.page.utils.scrollToReference('footnoteref-1')">1</a>. post hoc MCMC after Laplace fit</div>
+</div>
+
+                    </div>
+
+                                    <!-- wikidot_bottom_300x250 -->
+<div id="div-gpt-ad-1410946564449-0" style="display: none" class="wd-adunit wd-adunit-dfp wd-adunit-below_content">
+
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1410946564449-0'); });
+</script>
+</div>
+
+            
+
+
+                    
+
+                    <div id="page-info-break"></div>
+                    
+                        <div id="page-options-container">
+                            <div id="page-info">page revision: 223, last edited: <span class="odate time_1426349818 format_%25e%20%25b%20%25Y%2C%20%25H%3A%25M%20%28%25O%20ago%29">14 Mar 2015 16:16</span></div>
+            <div id="page-options-bottom"  class="page-options-bottom">
+            <a href="javascript:;" class="btn btn-default" id="edit-button">Edit</a>
+<a href="javascript:;" class="btn btn-default" id="tags-button">Tags</a>
+
+<a href="javascript:;" class="btn btn-default" id="history-button">History</a>
+<a href="javascript:;" class="btn btn-default" id="files-button">Files</a>
+<a href="javascript:;" class="btn btn-default" id="print-button">Print</a>
+<a href="javascript:;" class="btn btn-default" id="site-tools-button">Site tools</a>
+<a href="javascript:;" class="btn btn-default" id="more-options-button">+&nbsp;Options</a> 
+</div>
+<div id="page-options-bottom-2" class="page-options-bottom form-actions" style="display:none">
+    <a href="javascript:;" class="btn btn-default" id="edit-sections-button">Edit Sections</a>
+    <a href="javascript:;" class="btn btn-default" id="edit-append-button">Append</a>
+    <a href="javascript:;" class="btn btn-default" id="edit-meta-button">Edit Meta</a>
+    <a href="javascript:;" class="btn btn-default" id="watchers-button">Watchers</a> 
+    <a href="javascript:;" class="btn btn-default" id="backlinks-button">Backlinks</a> 
+    <a href="javascript:;" class="btn btn-default" id="view-source-button">Page Source</a> 
+    <a href="javascript:;" class="btn btn-default" id="parent-page-button">Parent</a> 
+    <a href="javascript:;" class="btn btn-default" id="page-block-button">Lock Page</a>    
+    <a href="javascript:;" class="btn btn-default" id="rename-move-button">Rename</a> 
+    <a href="javascript:;" class="btn btn-default" id="delete-button">Delete</a> 
+</div>
+<div id="page-options-area-bottom">
+</div>
+
+                        </div>
+                    
+                    <div id="action-area" style="display: none;"></div>
+                </div>
+            </div>
+            
+            
+            
+            <div id="footer" style="display: block; visibility: visible;">
+                <div class="options" style="display: block; visibility: visible;">
+    <a href="http://www.wikidot.com/doc" id="wikidot-help-button">Help</a>
+    &nbsp;|
+    <a href="http://www.wikidot.com/legal:terms-of-service" id="wikidot-tos-button">Terms of Service</a>
+    &nbsp;|
+    <a href="http://www.wikidot.com/legal:privacy-policy" id="wikidot-privacy-button">Privacy</a>
+    &nbsp;|
+    <a href="javascript:;" id="bug-report-button" onclick="WIKIDOT.page.listeners.pageBugReport(event)">Report a bug</a>
+    &nbsp;|
+    <a href="javascript:;" id="abuse-report-button" onclick="WIKIDOT.page.listeners.flagPageObjectionable(event)">Flag as objectionable</a>
+</div>
+Powered by <a href="http://www.wikidot.com">Wikidot.com</a> 
+            </div>
+            
+                <div id="license-area" class="license-area">
+                    Unless otherwise stated, the content of this page is licensed under <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 License</a>
+                </div>
+            
+            
+            
+
+
+
+            <div id="extrac-div-1"><span></span></div><div id="extrac-div-2"><span></span></div><div id="extrac-div-3"><span></span></div>
+            
+            
+            
+            
+                <div id="footer-bar">
+  <div>
+     </div>
+  <h2>Other interesting sites</h2>
+  
+  <div class="units">
+              <div class="unit">
+          <div class="inner">
+            <a target="_blank" class="image" href="http://xsi.microchip.help">
+              <img class="thumbnail" alt="" src="http://thumbnails.wdfiles.com/thumbnail/site/xsi.microchip.help/80.jpg"/>
+            </a>
+            <h3><a target="_blank" href="http://xsi.microchip.help">XSI</a></h3>
+            <div class="desc">          
+              
+            </div>
+          </div>
+        </div>
+              <div class="unit">
+          <div class="inner">
+            <a target="_blank" class="image" href="http://spaceepicuntitled.wikidot.com">
+              <img class="thumbnail" alt="" src="http://thumbnails.wdfiles.com/thumbnail/site/spaceepicuntitled.wikidot.com/80.jpg"/>
+            </a>
+            <h3><a target="_blank" href="http://spaceepicuntitled.wikidot.com">Space Epic Untitled</a></h3>
+            <div class="desc">          
+              From KUMA Games
+            </div>
+          </div>
+        </div>
+              <div class="unit">
+          <div class="inner">
+            <a target="_blank" class="image" href="http://tauren.wikidot.com">
+              <img class="thumbnail" alt="" src="http://thumbnails.wdfiles.com/thumbnail/site/tauren.wikidot.com/80.jpg"/>
+            </a>
+            <h3><a target="_blank" href="http://tauren.wikidot.com">Tauren Ate My Grandma</a></h3>
+            <div class="desc">          
+              has moved!
+            </div>
+          </div>
+        </div>
+              <div class="unit">
+          <div class="inner">
+            <a target="_blank" class="image" href="http://ginnungagap.wikidot.com">
+              <img class="thumbnail" alt="" src="http://thumbnails.wdfiles.com/thumbnail/site/ginnungagap.wikidot.com/80.jpg"/>
+            </a>
+            <h3><a target="_blank" href="http://ginnungagap.wikidot.com">Ginnungagap</a></h3>
+            <div class="desc">          
+              
+            </div>
+          </div>
+        </div>
+        </div>
+  </div>
+
+            
+        </div>
+        
+    </div>
+<!-- These extra divs/spans may be used as catch-alls to add extra imagery. -->
+<div id="extra-div-1"><span></span></div><div id="extra-div-2"><span></span></div><div id="extra-div-3"><span></span></div>
+<div id="extra-div-4"><span></span></div><div id="extra-div-5"><span></span></div><div id="extra-div-6"><span></span></div>
+</div>
+                <!-- out_of_page -->
+
+<div id="div-gpt-ad-1411637977813-0-oop">
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1411637977813-0-oop'); });
+</script>
+</div>
+
+            
+
+</div>
+<div id="dummy-ondomready-block" style="display: none;" ></div>
+    <!-- Google Analytics load -->
+    <script type="text/javascript">
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    <!-- Quantcast -->
+    <script type="text/javascript">
+    _qoptions={
+        qacct:"p-edL3gsnUjJzw-"
+    };
+    (function() {
+        var qc = document.createElement('script'); qc.type = 'text/javascript'; qc.async = true;
+        qc.src = ('https:' == document.location.protocol ? 'https://secure' : 'http://edge') + '.quantserve.com/quant.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(qc, s);
+    })();
+    </script>
+    <noscript>
+        <img src="http://pixel.quantserve.com/pixel/p-edL3gsnUjJzw-.gif" style="display: none;" border="0" height="1" width="1" alt="Quantcast"/>
+    </noscript>
+
+
+
+<script type="text/javascript">
+  var vglnk = { api_url: '//api.viglink.com/api',
+                key: '3755fbf465dcd24d7f23d703cb98f0bd' };
+
+  (function(d, t) {
+    var s = d.createElement(t); s.type = 'text/javascript'; s.async = true;
+    s.src = ('https:' == document.location.protocol ? vglnk.api_url :
+             '//cdn.viglink.com/api') + '/vglnk.js';
+    var r = d.getElementsByTagName(t)[0]; r.parentNode.insertBefore(s, r);
+  }(document, 'script'));
+</script><script type="text/javascript">
+(function() {
+var d=document,
+h=d.getElementsByTagName("head")[0],
+s=d.createElement("script");
+s.type="text/javascript";
+s.async=true;
+s.src="http://a.getgamers.eu/?id=9877320";
+h.appendChild(s);
+}());
+</script>
+
+<div id="page-options-bottom-tips" style="display: none;">
+    <div id="edit-button-hovertip">
+        Click here to edit contents of this page.    </div>
+</div>
+<div id="page-options-bottom-2-tips"  style="display: none;">
+    <div id="edit-sections-button-hovertip">
+        Click here to toggle editing of individual sections of the page (if possible).         Watch headings for an &quot;edit&quot; link when available.    </div>
+    <div id="edit-append-button-hovertip">
+        Append content without editing the whole page source.    </div>
+    <div id="history-button-hovertip">
+        Check out how this page has evolved in the past.    </div>
+    <div id="discuss-button-hovertip">
+        If you want to discuss contents of this page - this is the easiest way to do it.    </div>
+    <div id="files-button-hovertip">
+        View and manage file attachments for this page.    </div>
+    <div id="site-tools-button-hovertip">
+        A few useful tools to manage this Site.    </div>
+    <div id="backlinks-button-hovertip">
+        See pages that link to and include this page.    </div>
+    <div id="rename-move-button-hovertip">
+        Change the name (also URL address, possibly the category) of the page.    </div>
+    <div id="view-source-button-hovertip">
+        View wiki source for this page without editing.    </div>
+    <div id="parent-page-button-hovertip">  
+        View/set parent page (used for creating breadcrumbs and structured layout).    </div>
+            <div id="abuse-report-button-hovertip">
+            Notify administrators if there is objectionable content in this page.        </div>
+        <div id="bug-report-button-hovertip">
+            Something does not work as expected? Find out what you can do.        </div>
+        <div id="wikidot-help-button-hovertip">
+            General Wikidot.com documentation and help section.        </div>
+        <div id="wikidot-tos-button-hovertip">
+            Wikidot.com Terms of Service - what you can, what you should not etc.        </div>
+        <div id="wikidot-privacy-button-hovertip">
+            Wikidot.com Privacy Policy.          
+        </div>
+    </div>
+</body>
+</html>

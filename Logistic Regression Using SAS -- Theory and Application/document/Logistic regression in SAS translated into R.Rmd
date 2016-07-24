@@ -1,0 +1,1241 @@
+---
+title: "Translation of SAS codes from Logistic Regression using SAS into R"
+author: "Maciej Beręsewicz"
+date: "22 June 2016"
+output: 
+  html_document: 
+    toc: yes
+---
+
+```{r knitr,include=FALSE}
+library(knitr)
+opts_knit$set(root.dir = '../datasets')
+opts_chunk$set(warning = F, message = F,cache = F)
+```
+
+## Load packages
+
+Data processing and visualisation
+
+```{r data processing packages}
+library(haven)
+library(ggplot2)
+library(dplyr)
+library(broom)
+library(sjPlot)
+library(tidyr)
+```
+
+Packages that will be useful for logistic regression in R
+
+```{r packages for logistic regression}
+library(nlme) ## mixed models with more advanced covariance structures
+library(lme4) ## mixed models for glm
+library(mlogit) ## multinomial (mixed) logistic regression
+library(mnlogit)  ## multinomial (mixed) logistic regression
+library(MASS) ## ordinal logistic regression
+library(rms) ## package that contain measures of fit for logistic regression
+library(BaylorEdPsych) ## package that contain measures of fit for logistic regression
+library(sandwich) ## robust ovariance matrix estimators
+library(lmtest) ## testing assumptions
+library(mfx) ## Marginal Effects, Odds Ratios and Incidence Rate Ratios for GLMs
+library(Hmisc) ## useful functions for rms package
+library(lsmeans) # install this package to estimate means
+library(gmodels) # sas-like contrasts 
+library(elrm) # exact logisit regression
+library(logistf) # for firth penalized likelihood
+#library(plsc) ## package ‘plsc’ is not available (for R version 3.3.0)
+library(ResourceSelection) ## for hosmer lemenshof statistic
+library(pROC)
+library(ROCR)
+library(sjPlot) ## nice tables
+library(survey) ## for analysing survey data
+library(geepack) ## for proc genmod (generalized estimation equations)
+library(gee) ## for proc genmod (generalized estimation equations)
+library(geeM) # for gee models with Matrix based implementation
+library(multgee) ## multinomial and ordinal
+library(repolr) ## logistic regression
+library(MuMIn) ## to tools for comparing models
+library(Zelig) ## different   models
+library(glmmML) ## Generalized Linear Models with random intercept (Generalized linear models with clustering)
+library(survival) ## for conditional logistic regression
+library(varComp) ## test variance components
+```
+
+
+## Load data
+
+```{r}
+files <- list.files(pattern = '*.sas7bdat')
+base_names <- gsub('\\.sas7bdat','',files)
+sas_datasets <- lapply(files,read_sas)
+names(sas_datasets) <- base_names
+str(sas_datasets,1)
+```
+
+## Chapter 2: Binary Logistic Regression with PROC LOGISTIC: basics
+
+### Output 2.1 -- linear regression
+
+SAS Code:
+
+```
+/* The following program is found on page 9 */
+PROC REG DATA=penalty;
+  MODEL death=blackd whitvic serious;
+RUN;
+```
+
+R Code:
+
+```{r output 2.1}
+output2.1 <- lm(formula = death ~ blackd + whitvic + serious,
+                data = sas_datasets[['penalty']])
+summary(output2.1)
+
+```
+
+### Output 2.2 -- robust standard errors
+
+SAS Code:
+
+```
+/* The following program is found on page 13 */
+PROC REG DATA=penalty;
+  MODEL death=blackd whitvic serious / HCC;
+RUN;
+```
+
+SAS has HC0, HC1, HC2 and HC3 methods from `sandwich` package.
+
+R Code:
+
+Step by step
+
+```{r output2.2}
+output2.1 %>% 
+  vcovHC(type = 'HC') %>%
+  diag() %>%
+  sqrt()
+```
+
+using `lmtest` package
+
+```{r lmtest for robust covariance and errors }
+coeftest(x = output2.1, vcov. = sandwich)
+coeftest(x = output2.1, vcov = vcovHC(output2.1, type = 'HC'))
+```
+
+using `rms` package
+
+```{r rms package for robust covariance and errors}
+output2.1_lm <- ols(
+  formula = death ~ blackd + whitvic + serious,
+  data = sas_datasets[['penalty']],
+  x = TRUE
+  )
+  robcov(output2.1_lm)
+```
+
+
+### Output 2.3 -- intro to logistic regression
+
+SAS code:
+
+```
+PROC LOGISTIC DATA=penalty;
+  MODEL death(EVENT='1')=blackd whitvic serious;
+RUN;
+```
+
+```{r replication of results using glm function}
+output2.3 <- glm(
+  formula = death ~ blackd + whitvic + serious,
+  data = sas_datasets[['penalty']],
+  family = binomial(link = 'logit')
+)
+summary(output2.3)
+### Odds ratio estimates
+output2.3 %>%
+  coef() %>%
+  exp()
+output2.3 %>%
+  confint() %>%
+  exp()
+```
+
+The same but using `rms` package
+
+```{r replication of results using rms package}
+output2.3_rms <- lrm(
+  formula = death ~ blackd + whitvic + serious,
+  data = sas_datasets[['penalty']]
+)
+coef(output2.3_rms)
+```
+
+### Output 2.4 -- Marginal Effects
+
+```
+/* The following program is found on page 29 */
+PROC QLIM DATA=penalty;
+  ENDOGENOUS death~DISCRETE(DIST=LOGISTIC);
+  MODEL death = blackd whitvic serious;
+  OUTPUT OUT=a MARGINAL;
+PROC PRINT DATA=a(OBS=10);
+  VAR meff_p2_blackd meff_p2_whitvic meff_p2_serious;
+RUN;
+```
+
+```{r marginal effects with mfx package r}
+output2.4 <- logitmfx(
+  formula = death ~ blackd + whitvic + serious,
+  data = sas_datasets[['penalty']]
+)
+output2.4
+
+## default marginal effects represent the partial effects for the average observation. If atmean = FALSE the function calculates average partial effects.
+
+output2.4 <- logitmfx(
+  formula = death ~ blackd + whitvic + serious,
+  data = sas_datasets[['penalty']],
+  atmean = FALSE
+)
+output2.4
+```
+
+### Output 2.5 -- Using class variable
+
+```
+/* The following program is found on page 30 */
+PROC LOGISTIC DATA=penalty;
+  CLASS culp /PARAM=REF;
+  MODEL death(EVENT='1') = blackd whitvic culp ;
+RUN;
+```
+
+```{r class variables}
+output2.5 <- glm(
+  formula = death ~ blackd + whitvic + factor(culp),
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+summary(output2.5)
+
+### factor 
+
+sas_datasets[['penalty']]$culp <- factor(sas_datasets[['penalty']]$culp)
+
+output2.5 <- glm(
+  formula = death ~ blackd + whitvic + relevel(culp,ref='5'),
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+summary(output2.5)
+```
+
+Now do the same in `rms` package
+
+```{r rms package factor variable}
+
+output2.5_rms <- lrm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']]
+)
+output2.5_rms
+
+
+sas_datasets[['penalty']]$culp <- 
+  relevel(sas_datasets[['penalty']]$culp,ref='5')
+
+output2.5_rms <- lrm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']]
+)
+
+output2.5_rms
+anova(output2.5_rms)
+```
+
+### Output 2.6 -- results from Test and Contrast Statements
+
+
+```
+/* The following program is found on page 30 */
+PROC LOGISTIC DATA=penalty;
+  CLASS culp /PARAM=REF;
+  MODEL death(EVENT='1') = blackd whitvic culp ;
+  CONTRAST 'culp2 vs. culp3' clup 0 1 -1 0 ;
+  TEST culp2 = culp3;
+RUN;
+```
+
+The same using `contrast` function from `rms` package
+
+**WHY DATADIST**
+
+```{r}
+## Distribution Summaries for Predictor Variables
+d <- datadist(sas_datasets[['penalty']])
+
+## why??
+options(datadist = 'd')
+
+## defining contrasts
+rms::contrast(output2.5_rms,
+         list(culp = 2),
+         list(culp = 3))
+
+## all vs 5
+rms::contrast(output2.5_rms,
+         list(culp = 1:4),
+         list(culp = 5))
+
+## all vs 5 - test
+rms::contrast(output2.5_rms,
+         list(culp = 1:4),
+         list(culp = 5),
+         typ = 'joint')
+```
+
+
+### Output 2.7 - change in contrasts
+
+```{r output 2.7 odds ratio estimates}
+### replicate odss ratio estimates from output 2.7
+summary(output2.5_rms,culp=5)
+```
+
+```{r calculate lsmeans for logistic regression}
+output2.5_glm <- glm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+
+summary(output2.5_glm)
+lsmeans(object = output2.5_glm,
+        specs = 'culp') %>%
+  contrast()
+
+lsmeans(object = output2.5_glm,
+        specs = 'culp') %>%
+  pairs()
+```
+
+### Output 2.9 - multiplicative variables
+
+```
+/* The following program is found on page 36 */
+PROC LOGISTIC DATA=penalty;
+  MODEL death(EVENT='1') = blackd whitvic culp blackd*whitvic;
+RUN;
+
+```
+
+```{r output 2.9}
+sas_datasets[['penalty']]$culp <- as.numeric(sas_datasets[['penalty']]$culp)
+
+output2.9 <- glm(
+  formula = death ~ blackd*whitvic + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+
+summary(output2.9)
+
+output2.9_rms <- lrm(
+  formula = death ~ blackd*whitvic + culp,
+  data = sas_datasets[['penalty']]
+)
+output2.9_rms
+
+```
+
+## Chapter 3
+
+### Output 3.8 -- confidence intervals 
+
+**Profile-likelihood confidence intervals**
+
+```
+/* The following program is found on page 54 */
+PROC LOGISTIC DATA=penalty;
+  WHERE blackd=0;
+  CLASS culp /PARAM=REF;
+  MODEL death(EVENT='1') = culp serious / CLPARM=PL ALPHA=.01;
+RUN;
+```
+
+```{r confidence intervals}
+sas_datasets[['penalty']]$culp <- factor(sas_datasets[['penalty']]$culp)
+output3.8 <- glm(
+  formula  = death ~ culp + serious,
+  data = subset(sas_datasets[['penalty']], blackd == 0),
+  family = binomial())
+
+confint(output3.8) %>%
+  exp()
+```
+
+
+### Output 3.9 -- exact regression
+
+
+```
+/* The following program is found on page 55 */
+PROC LOGISTIC DATA=penalty;
+  WHERE blackd=0;
+  CLASS culp /PARAM=REF;
+  MODEL death(EVENT='1') = culp serious;
+  EXACT culp serious / ESTIMATE=BOTH;
+RUN;
+```
+
+
+With package `elrm`
+
+```{r exact logistic regression with elrm package}
+### data need to be in an aggregated form
+
+for_exact <- sas_datasets[['penalty']] %>% 
+  group_by(death,blackd,culp) %>% 
+  summarise(n=n()) %>% 
+  spread(death,n,fill=0,sep='_')  %>%
+  ungroup() %>%
+  mutate(n = death_0+death_1,
+         l = 1) %>%
+  filter(blackd == 1)  %>%
+  spread(culp,l,fill=0,sep='_')
+  
+output_3.9 <- elrm(
+  formula = death_1/n ~ culp_1 + culp_2 + culp_3 + culp_4,
+  dataset = for_exact,
+  interest = ~ culp_1 + culp_2 + culp_3 + culp_4,
+  iter = 50000, 
+  burnIn = 5000
+)
+
+summary(output_3.9)
+```
+
+
+### Output 3.10 -- penalized likelihood -- Firth
+
+```
+/* The following program is found on page 58 */
+PROC LOGISTIC DATA=penalty;
+  WHERE blackd=0;
+  CLASS culp /PARAM=REF;
+  MODEL death(EVENT='1') = culp serious / FIRTH 
+    CLPARM=PL;
+RUN;
+```
+
+With package `logistf`
+
+```{r output3.10 penalized likelihood with firth correction}
+output3.10 <- logistf(
+  formula  = death ~ culp + serious,
+  data = subset(sas_datasets[['penalty']], blackd == 0))
+summary(output3.10)
+```
+
+### Output 3.14 --  goodness of fit 
+
+```
+/* The following program is found on page 66 */
+PROC LOGISTIC DATA=penalty;
+  MODEL death(EVENT='1') = blackd whitvic culp / LACKFIT;
+RUN;
+```
+
+
+```{r output 3.14 goodness of fit}
+output3.14 <- glm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+
+hoslem.test(x = sas_datasets[['penalty']]$death,
+            y = fitted(output3.14))
+```
+
+With `rms` package
+
+```{r goodness of fit with rms package}
+output3.14_rms <- lrm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']],
+  y= T, x = T
+)
+resid(output3.14_rms,'gof')
+```
+
+
+### Output 3.15 and 3.16 -- measures of quality
+
+```
+PROC LOGISTIC DATA=penalty;
+  MODEL death(EVENT='1')=culp whitvic blackd;
+  OUTPUT OUT=a PRED=yhat;
+PROC MEANS; 
+ CLASS death;
+ VAR yhat; 
+RUN;
+```
+
+```{r}
+output3.15 <- glm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+
+output3.15_summary <- data.frame(y = sas_datasets[['penalty']]$death,
+                      y_hat = fitted(output3.15))
+
+
+output3.15_summary %>%
+  group_by(y) %>%
+  do(t = tidy(summary(.$y_hat))) %>% 
+  unnest(t)
+
+BaylorEdPsych::PseudoR2(output3.15)
+# plsc::pR2(output3.15)
+
+output3.15_rms <- lrm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']]
+)
+
+output3.15_rms$stats
+```
+
+### Output 3.17 -- ROC curves
+
+
+```
+/* The following program is found on page 76 */
+PROC LOGISTIC DATA=penalty PLOTS(ONLY)=ROC;
+  MODEL death(EVENT='1')=blackd whitvic culp ;
+RUN;
+```
+
+With `pROC` package
+
+
+```{r code for roc curve}
+output3.17 <- glm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+
+sas_datasets[['penalty']]$prob <- predict(output3.17,type= 'response') 
+roc_penalty <- roc(death ~ prob, data = sas_datasets[['penalty']])
+plot(roc_penalty)
+```
+
+With `ROCR` package
+
+```{r example 3.17 with ROCR package}
+rocr_example <- prediction(sas_datasets[['penalty']]$prob,
+                           sas_datasets[['penalty']]$death)
+rocr_perf <- performance(rocr_example,"tpr","fpr")
+plot(rocr_perf)
+```
+
+
+```
+/* The following program is found on page 78 */
+PROC LOGISTIC DATA=penalty;
+  MODEL death(EVENT='1')=blackd whitvic culp;
+  ROC 'omit culp' blackd whitvic;
+  ROC 'omit blackd' whitvic culp;
+  ROC 'omit whitvic' blackd culp;
+  ROCCONTRAST / ESTIMATE=ALLPAIRS;
+RUN;
+```
+
+```{r for all pairs of variables}
+output3.17_1 <- glm(
+  formula = death ~ blackd + whitvic ,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+output3.17_2 <- glm(
+  formula = death ~  whitvic + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+output3.17_3 <- glm(
+  formula = death ~ blackd + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial()
+)
+sas_datasets[['penalty']]$prob1 <- predict(output3.17_1,type= 'response')
+sas_datasets[['penalty']]$prob2 <- predict(output3.17_2,type= 'response')
+sas_datasets[['penalty']]$prob3 <- predict(output3.17_3,type= 'response')
+
+### ROCR 
+perfs <- list()
+for (c in paste0('prob', 1:3)) {
+  rocr_example <- prediction(sas_datasets[['penalty']][, c],
+  sas_datasets[['penalty']]$death)
+  perfs[[c]] <- performance(rocr_example, "tpr", "fpr")
+}
+lapply(perfs,plot)
+
+### pROC
+roc_penalty1 <- roc(sas_datasets[['penalty']]$death,
+                   sas_datasets[['penalty']]$prob1)
+roc_penalty2 <- roc(sas_datasets[['penalty']]$death,
+                   sas_datasets[['penalty']]$prob2)
+roc_penalty3 <- roc(sas_datasets[['penalty']]$death,
+                   sas_datasets[['penalty']]$prob3)
+
+plot(roc_penalty1,col= 'red')
+plot(roc_penalty2,col= 'blue',add=T)
+plot(roc_penalty3,col= 'black',add=T)
+
+```
+
+Comparing ROC curves by test. SAS in ROCCONTRAST is using Delong method. This method is default for `pROC` package.
+
+```{r roccontrast - paired comparison}
+roc.test(roc_penalty1,roc_penalty2) 
+### the same as above
+roc.test(death ~ prob1 + prob2, data = sas_datasets[['penalty']]) 
+roc.test(death ~ prob1 + prob3, data = sas_datasets[['penalty']]) 
+roc.test(death ~ prob2 + prob3, data = sas_datasets[['penalty']]) 
+```
+
+
+### Output 3.9 -- Influence measures
+
+```
+/* The following program is found on page 82 */
+PROC LOGISTIC DATA=penalty PLOTS(UNPACK LABEL)=  
+    (INFLUENCE DFBETAS PHAT DPC LEVERAGE);
+  MODEL death(EVENT='1')=blackd whitvic culp ;
+RUN;
+```
+
+
+```{r}
+inf_meas <- influence.measures(output3.15)
+str(inf_meas,1)
+```
+
+### Ouput 3.10 -- link functions
+
+```{r link functions with sjPlot package, results='asis'}
+output3.10_logit <- glm(
+  formula = death ~ blackd + whitvic + as.numeric(culp),
+  data = sas_datasets[['penalty']],
+  family = binomial(link = 'logit')
+)
+output3.10_probit <- glm(
+  formula = death ~ blackd + whitvic + as.numeric(culp),
+  data = sas_datasets[['penalty']],
+  family = binomial(link = 'probit')
+)
+output3.10_cloglog  <- glm(
+  formula = death ~ blackd + whitvic + as.numeric(culp),
+  data = sas_datasets[['penalty']],
+  family = binomial(link = 'cloglog')
+)
+d <- sjt.glm(
+  output3.10_logit,
+  output3.10_probit,
+  output3.10_cloglog,
+  show.aic = TRUE,
+  no.output = TRUE
+  )
+cat(d$knitr[[1]])
+```
+
+### Summary of GLM -- using `sjPlot` package
+
+```{r glm by sjplot package, results='asis'}
+output3.10_logit <- glm(
+  formula = death ~ blackd + whitvic + culp,
+  data = sas_datasets[['penalty']],
+  family = binomial(link = 'logit')
+)
+
+results_sjplot <- sjt.glm(
+  output3.10_logit,
+  show.aic = TRUE,
+  no.output = TRUE,
+  show.se = TRUE,
+  show.r2 = TRUE,
+  show.icc = TRUE, 
+  show.re.var = TRUE, 
+  show.loglik = TRUE,
+  show.aicc = TRUE, 
+  show.dev = TRUE,
+  #show.hoslem = TRUE, 
+  show.family = TRUE, 
+  show.chi2 = TRUE
+  )
+cat(results_sjplot$knitr[[1]])
+```
+
+### Output 3.12 -- Heterogenity ? 
+
+
+## Chapter 8 -- Logit analysis of longitudinal and other clustered data
+
+### Output 8.1 -- first cases of PTSD dataset
+
+```{r}
+head(sas_datasets[['ptsd']])
+```
+
+### Output 8.2 -- logistic regression for PTSD data
+
+
+```
+/* The following program is found on page 220 */
+PROC LOGISTIC DATA=ptsd;
+  CLASS time / PARAM=GLM;
+  MODEL ptsd(EVENT='1') = control problems sevent cohes time;
+RUN; 
+```
+
+```{r simple regression with ptsd data}
+sas_datasets[['ptsd']]$time <- factor(sas_datasets[['ptsd']]$time)
+sas_datasets[['ptsd']]$time <- relevel(sas_datasets[['ptsd']]$time,ref='3')
+
+output8.2 <- lrm(
+  formul = ptsd ~ control + problems + sevent + cohes + time,
+  data = sas_datasets[['ptsd']]
+)
+output8.2
+```
+
+Check association between Symptoms of PTSD at Adjacent Time Periods
+
+```{r symptoms of ptsd vs time,results = 'asis'}
+sas_datasets[['ptsd']] %>%
+  dplyr::select(subjid,time,ptsd) %>%
+  spread(time, ptsd, fill = 0, sep = '_') %>%
+  count(time_1,time_2,time_3) %>%
+  kable()
+```
+
+### Output 8.3 -- proc surveylogistic output with robust standard errors
+
+```
+/* The following program is found on page 222 */
+PROC SURVEYLOGISTIC DATA=ptsd;
+  CLASS time / PARAM=GLM;
+  MODEL ptsd(EVENT='1') = control problems sevent cohes time;
+  CLUSTER subjid;
+RUN;
+```
+
+The same using `survey` package. First we need to define `design` object.
+
+```{r  logistic regression results using survey to account for clusters}
+des1 <- svydesign(ids =  ~ subjid,
+                  data = sas_datasets[['ptsd']],
+                  weights= ~1)
+des1
+
+res_svylog <- svyglm(
+  formul = ptsd ~ control + problems + sevent + cohes + time,
+  design = des1,
+  family = binomial()
+)
+
+summary(res_svylog)
+```
+
+**SURVEY STANDARD ERRORS ARE DIFFERENT**
+
+### Output 8.4 -- proc genmod -- comparison of results
+
+SAS code:
+
+```
+/* The following program is found on page 224 */
+PROC GENMOD DATA=ptsd DESC;
+  CLASS subjid time;
+  MODEL ptsd = control problems sevent cohes time / 
+    DIST=BINOMIAL TYPE3;
+  REPEATED SUBJECT=subjid;
+RUN;
+```
+
+Now, do the same in R with `gee` and `geepack` packages
+
+```{r gee for generalized estimation equations}
+gee_output8.4 <- gee(
+  formula = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  id = subjid
+)
+
+## without initial values for betas
+summary(gee_output8.4)
+
+## with initial values for betas
+gee_output8.4 <- gee(
+  formula = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  id = subjid, 
+  b= coef(res_svylog)
+)
+
+summary(gee_output8.4)
+```
+
+Now compare results with `geepack` package
+
+```{r geepack for generalized estimation equations}
+geepack_output8.4 <- geeglm(
+  formula = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  id = subjid
+)
+summary(geepack_output8.4)
+anova(geepack_output8.4)
+```
+
+
+### Output 8.6 -- proc genmod -- introducing correlation structure
+
+```
+/* The following program is found on page 227 */
+PROC GENMOD DATA=ptsd DESC;
+  CLASS subjid time;
+  MODEL ptsd = control problems sevent cohes time / D=B;
+  REPEATED SUBJECT=subjid / WITHIN=time TYPE=UN CORRW;
+RUN;
+```
+
+```{r geepack for gee and unstructured correlation}
+geepack_output8.6 <- geeglm(
+  formula = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  id = subjid,
+  corstr = 'unstructured'
+)
+summary(geepack_output8.6)
+anova(geepack_output8.6)
+```
+
+### Output 8.7 -- proc genmod -- introducing correlation structure
+
+```
+/* The following program is found on page 227 */
+PROC GENMOD DATA=ptsd DESC;
+  CLASS subjid time;
+  MODEL ptsd = control problems sevent cohes time / D=B;
+  REPEATED SUBJECT=subjid / WITHIN=time TYPE=EXCH CORRW;
+RUN;
+```
+
+
+```{r geepack for gee and exchangeable correlation}
+geepack_output8.7 <- geeglm(
+  formula = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  id = subjid,
+  corstr = 'exchangeable'
+)
+summary(geepack_output8.7)
+anova(geepack_output8.7)
+```
+
+Robust standard errors in GEE are better because:
+
+* are robust for model misspecification
+* are better for bigger sample sizes, especially when time series is longer
+
+### Output 8.8 -- proc genmod -- MDEP correlation structure
+
+```
+/* The following program is found on page 227 */
+PROC GENMOD DATA=ptsd DESC;
+  CLASS subjid time;
+  MODEL ptsd = control problems sevent cohes time / D=B;
+  REPEATED SUBJECT=subjid / WITHIN=time TYPE=MDEP(2) CORRW;
+RUN;
+```
+
+Package `geepack` do not have MDEP correlation structures, now we should use `gee`.
+
+```{r gee for gee and exchangeable correlation}
+gee_output8.8 <- gee(
+  formula = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  id = subjid,
+  corstr = 'stat_M_dep',
+  Mv = 2
+)
+summary(gee_output8.8)
+```
+
+
+Which correlation matrix when? 
+
+* unstructured -- if time points is relativly small ( <=4)
+* MDEP / AR1 -- when there is a trend
+* exchangable -- when you are modelling students within schools or pople within neighborhoods because there is no natural order
+
+
+
+GEE vs Mixed models:
+
+* mixed models can have more complex structures than gee model (multiple levels of clusters, overlapping clusters, random coefficients)
+* mixed models can correct for heterogenity shrinkage -- models are subject specific rather than populatio averaged 
+
+### Output 8.11 -- Mixed models 
+
+```
+/* The following program is found on page 235 */
+PROC GLIMMIX DATA=ptsd METHOD=QUAD;
+  CLASS subjid time;
+  MODEL ptsd = control problems sevent cohes time / D=B 
+     SOLUTION;
+  RANDOM INTERCEPT / SUBJECT=subjid;
+  COVTEST 0;
+RUN;
+
+```
+
+Now do the same using `MASS` (based on `nlme`), `glmmML` and `lme4` packages
+
+
+```{r basic mixed models using MASS package}
+glmmPQL_output8.11 <- glmmPQL(
+  fixed = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  random = ~ 1 | subjid,
+  data = sas_datasets[['ptsd']],
+  verbose = F)
+summary(glmmPQL_output8.11)
+```
+
+
+```{r basic mixed models using glmmML package}
+glmmml_output8.11 <- glmmML(
+  formula = ptsd ~ control + problems + sevent + cohes + time,
+  family = binomial(),
+  cluster = subjid,
+  data = sas_datasets[['ptsd']],
+  prior = 'gaussian',
+  method = 'ghq', ## to get consistent results with SAS (Gauss-Hermite),
+  n.points = 50
+  )
+summary(glmmml_output8.11)
+```
+
+```{r basic mixed models using lme4 package}
+glmer_output8.11 <- glmer(
+  formula = ptsd ~ (1 | subjid) +
+  control + problems + sevent + cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  control = glmerControl(optimizer = "nloptwrap",
+  calc.derivs = FALSE),
+  nAGQ = 25
+  )
+summary(glmer_output8.11)
+```
+
+### output 8.12 -- random slope
+
+```
+/* The following program is found on page 238 */
+PROC GLIMMIX DATA=ptsd METHOD=QUAD;
+  CLASS subjid time;
+  MODEL ptsd = control problems sevent cohes time / D=B S;
+  RANDOM INTERCEPT sevent/ SUBJECT=subjid;
+  COVTEST 0 .;
+  COVTEST . 0;
+RUN;
+
+```
+
+```{r output 8.12 random slope for sevent}
+glmer_output8.11 <- glmer(
+  formula = ptsd ~ (1 + sevent | subjid) +
+  control + problems +  cohes + time,
+  family = binomial(),
+  data = sas_datasets[['ptsd']],
+  control = glmerControl(optimizer = "nloptwrap",
+  calc.derivs = FALSE)
+  )
+summary(glmer_output8.11)
+
+```
+
+
+### output 8.13 - conditional logistic regression
+
+```
+/* The following program is found on page 242 */
+PROC LOGISTIC DATA=ptsd ;
+  CLASS time / PARAM=GLM;
+  MODEL ptsd(EVENT='1') = control problems sevent cohes time;
+  STRATA subjid;
+RUN;
+
+```
+
+```{r conditional logist regression witn survival package}
+output8.13 <- clogit(
+  formula = ptsd ~ control + problems + sevent + time + strata(subjid),
+  data = sas_datasets[['ptsd']],
+  method = 'exact'
+)
+summary(output8.13)
+```
+
+
+### output 8.14
+
+```{r output 8.14}
+head(sas_datasets[['postdoc']])
+names(sas_datasets[['postdoc']]) <- 
+  tolower(names(sas_datasets[['postdoc']]))
+
+sas_datasets[['postdoc']] <- sas_datasets[['postdoc']] %>%
+  arrange(docid)
+sas_datasets[['postdoc']]$const <- 1
+```
+
+### output 8.15
+
+```
+/* The following program is found on page 246 */
+PROC GENMOD DATA=postdoc DESC;
+  CLASS docid;
+  MODEL pdoc = age mar doc ag und arts cits / D=B;
+  REPEATED SUBJECT=docid / TYPE=EXCH;
+RUN;
+
+/* The following program is found on page 246 */
+PROC GENMOD DATA=postdoc DESC;
+  CLASS docid;
+  MODEL pdoc = age mar doc ag und arts cits / D=B;
+  REPEATED SUBJECT=docid / TYPE=EXCH;
+RUN;
+
+/* The following program is found on page 248 */
+PROC GLIMMIX DATA=postdoc METHOD=QUAD EMPIRICAL;
+  CLASS docid;
+  MODEL pdoc = age mar doc ag und arts cits / D=B S;
+  RANDOM INTERCEPT / SUBJECT=docid;
+  COVTEST 0;
+RUN;
+
+/* The following program is found on page 249 */
+PROC LOGISTIC DATA=postdoc;
+  MODEL pdoc(EVENT='1') = age mar ag und arts cits;
+  STRATA docid;
+RUN;
+
+```
+
+```{r logistic regression}
+output8.15_lrm <- lrm(
+  formula = pdoc ~ age + mar + doc + ag + und + arts + cits,
+  data = sas_datasets[['postdoc']]
+)
+output8.15_lrm
+```
+
+```{r postdoc data with geepack}
+output8.15_gee <- geeglm(
+  formula = pdoc ~ age + mar + doc + ag + und + arts + cits,
+  id = docid,
+  data = sas_datasets[['postdoc']],
+  corstr = 'exchangeable',
+  family = binomial()
+)
+summary(output8.15_gee)
+```
+
+
+```{r postdoc data with glmer}
+output8.15_glmer <- glmer(
+  formula = pdoc ~ (1|docid) + age + mar + doc + ag + und + arts + cits,
+  data = sas_datasets[['postdoc']],
+  family = binomial(),
+  control = glmerControl(optimizer = "nloptwrap",
+  calc.derivs = FALSE),
+  nAGQ = 50 ## for Gauss-Hermite quadrature
+)
+summary(output8.15_glmer)
+```
+
+----------------------
+
+**WIERD RESULTS**
+
+----------------------
+
+### Output 8.19 - propensity matching logistic regression
+
+```
+/* The following program is found on page 256 */
+PROC LOGISTIC DATA=casecont;
+  MODEL pubhouse(EVENT='1')= staybaby black kids doubleup age;
+RUN;
+```
+
+```{r logistic regression on casecont}
+sas_datasets[['casecont']] <- sas_datasets[['casecont']] %>%
+  arrange(casenum)
+
+output8.19 <- lrm(
+  formula = pubhouse ~ staybaby +black +kids+ doubleup +age,
+  data = sas_datasets[['casecont']]
+)
+output8.19
+```
+
+
+### Output 8.21 - matched-pair data with adjustment for matching
+```
+/* The following program is found on page 254 */
+PROC GENMOD DATA=casecont DESC;
+  CLASS casenum;
+  MODEL pubhouse=staybaby black kids doubleup age days / 
+    D=B;
+  REPEATED SUBJECT=casenum / TYPE=EXCH;
+RUN; 
+```
+
+```{r geepack for matched-pair data with adjustment for matching}
+output8.20 <- geeglm(
+  formula = pubhouse ~ staybaby + black +kids+ doubleup +age,
+  data = sas_datasets[['casecont']],
+  id = casenum,
+  corstr = 'exch',
+  family = binomial('logit')
+)
+
+summary(output8.20)
+```
+
+### Output 8.22 -- fixed-effects regression to matched pairs
+
+```
+/* The following program is found on page 256 */
+PROC LOGISTIC DATA=casecont;
+  MODEL pubhouse(EVENT='1')= staybaby black kids doubleup age;
+  STRATA casenum;
+RUN;
+```
+
+```{r clogit for fixed effects for casecont}
+output8.22 <- clogit(
+  formula = pubhouse ~ staybaby + black +kids+ doubleup +age + strata(casenum),
+  data = sas_datasets[['casecont']],
+  method = 'exact'
+)
+summary(output8.22)
+```
+
+### Output 8.25 -- fixed effect for staybaby
+
+```
+/* The following program is found on page 258 */
+PROC LOGISTIC DATA=casecont;
+  MODEL staybaby(EVENT='1')=black kids doubleup age;
+  STRATA casenum;
+RUN;
+```
+
+```{r conditional logistic regression for staybaby}
+output8.25 <- clogit(
+  formula = staybaby ~  black + kids + doubleup +age + strata(casenum),
+  data = sas_datasets[['casecont']],
+  method = 'exact'
+)
+summary(output8.25)
+```
+
+
+Summary of method:
+
+* all produce consistent estimates of the standard errors in the presence of clustering
+* GEE produces coefficient estimates that have minimal sampling variability
+* GEE however gives estimates of population-averaged coeficient rather than subject-specific
+* Population-average coeficients are subject to heterogentity shrinkage -- attenuation toward 0 in the presence of heterogentity in the population
+* Heterogenity shrinkage can be corrected by estimating mixed model or conditional logistic regression
+* Conditional logit reduce bias that arrise from correlation between individual and cluster-level variables (spuriousness)
+* Clogit analysis might discard a considerable portion of the data, hence include the standard errors
+
+## Output 8.26 -- hybrid approach
+
+* calculate the means of the time-varying explanatory variables for each individual
+* calculate the deviations of the time-varying expenatory variables from the individual-specific means
+* estimate the models with variables created in steps 1 and 2 along with any additional time-constant explanatory variables
+* use GEE or mixed model to adjust for residual dependence
+
+```
+/* The following program is found on pages 260-261 */
+PROC SUMMARY DATA=ptsd NWAY;
+  CLASS subjid;
+  VAR control problems sevent;
+  OUTPUT OUT=means MEAN=mcontrol mproblem msevent;
+DATA combine;
+  MERGE ptsd means;
+  BY subjid;
+  dcontrol=control-mcontrol;
+  dproblem=problems-mproblem;
+  dsevent=sevent-msevent;
+RUN;
+
+/* The following program is found on page 261 */
+PROC GLIMMIX DATA=combine METHOD=QUAD EMPIRICAL;
+  CLASS subjid time;
+  MODEL ptsd = dcontrol dproblem dsevent mcontrol mproblem 
+       msevent cohes time / D=B S;
+  RANDOM INTERCEPT / SUBJECT=subjid;
+RUN;
+```
+
+
+```{r calculation of new columns}
+sas_datasets[['ptsd']] <- sas_datasets[['ptsd']] %>%
+  group_by(subjid) %>%
+  mutate(mcontrol = mean(control) ,
+         mproblem = mean(problems),
+         msevent = mean(sevent), 
+         dcontrol = control - mcontrol,
+         dproblem = problems - mproblem,
+         dsevent =  sevent  -msevent) %>%
+  ungroup()
+```
+
+```{r modelling using hybrid approach}
+output8.26 <- glmer(
+  formula = ptsd ~ (1 | subjid) + 
+    dcontrol + dproblem + dsevent + mcontrol + 
+    mproblem  + msevent + cohes + time,
+  data = sas_datasets[['ptsd']],
+  family = binomial(),
+  control = glmerControl(optimizer = "nloptwrap",
+                         calc.derivs = FALSE),
+  nAGQ = 50)
+
+summary(output8.26)
+```
+
+
